@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  graph-rag-api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL}
+      - LLM_MODEL_NAME=${LLM_MODEL_NAME}
+      - MODEL_PROVIDER=${MODEL_PROVIDER}
+      - GREMLIN_URL=${GREMLIN_URL}
+      - GREMLIN_DATABASE=${GREMLIN_DATABASE}
+      - GREMLIN_GRAPH=${GREMLIN_GRAPH}
+      - GREMLIN_KEY=${GREMLIN_KEY}
+      - GREMLIN_USERNAME=${GREMLIN_USERNAME}
+      - GREMLIN_TRAVERSAL_SOURCE=${GREMLIN_TRAVERSAL_SOURCE}
+      - HUGGINGFACE_EMBEDDING_MODEL=${HUGGINGFACE_EMBEDDING_MODEL}
+      - HUGGINGFACE_API_TOKEN=${HUGGINGFACE_API_TOKEN}
+      - EMBEDDING_MODEL_NAME=${EMBEDDING_MODEL_NAME}
+      - VECTOR_STORE_TYPE=${VECTOR_STORE_TYPE}
+      - VECTOR_DB_URI=${VECTOR_DB_URI}
+      - VECTOR_INDEX=${VECTOR_INDEX}
+      - MAX_GRAPH_RESULTS=${MAX_GRAPH_RESULTS}
+      - MAX_SEMANTIC_RESULTS=${MAX_SEMANTIC_RESULTS}
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    env_file:
+      - .env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

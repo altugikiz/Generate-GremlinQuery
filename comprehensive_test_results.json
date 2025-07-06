@@ -1,0 +1,152 @@
+{
+  "tests": [
+    {
+      "test": "system_health",
+      "status": "success",
+      "response": {
+        "status": "development",
+        "timestamp": "2025-07-05T17:20:37.262076",
+        "components": {
+          "gremlin": "unavailable_dev_mode",
+          "vector_store": "healthy",
+          "rag_pipeline": "healthy"
+        },
+        "version": "1.0.0",
+        "uptime_seconds": 86.44085574150085,
+        "development_mode": true
+      },
+      "execution_time_ms": 0
+    },
+    {
+      "test": "English Service Query",
+      "status": "success",
+      "query": "Show me hotels with excellent service",
+      "response": {
+        "answer": "I'm running in development mode and couldn't fully process your query: \"Show me hotels with excellent service\"\n\nHere's what I tried:\n- Generated Gremlin query: g.V().hasLabel('Hotel').as('hotel').inE('HAS_REVIEW').outV().as('review').inE('HAS_ANALYSIS').outV().as('analysis').outE('ANALYZES_ASPECT').inV().has('name', 'service').select('analysis').has('aspect_score', gte(4.5)).select('hotel').limit(10)\n- Graph search: ❌ Not available\n- Semantic search: ✅ Attempted\n- Found 0 graph results and 0 semantic results\n\nTo get better results, ensure your database connections are properly configured.\n                \nProcessing time: 1380.81ms",
+        "query": "Show me hotels with excellent service",
+        "gremlin_query": null,
+        "context": null,
+        "execution_time_ms": 1381.1352252960205,
+        "development_mode": true
+      },
+      "execution_time_ms": 1381.1352252960205
+    },
+    {
+      "test": "Turkish Cleanliness Query",
+      "status": "failed",
+      "query": "Türkçe yazılmış temizlik şikayetlerini göster",
+      "error": ""
+    },
+    {
+      "test": "VIP Guest Issues",
+      "status": "success",
+      "query": "Find VIP guest complaints",
+      "response": {
+        "answer": "I'm running in development mode and couldn't fully process your query: \"Find VIP guest complaints\"\n\nHere's what I tried:\n- Generated Gremlin query: g.V().hasLabel('Reviewer').has('traveler_type', 'VIP').out('WROTE').has('title', containing('complaint')).limit(10)\n- Graph search: ❌ Not available\n- Semantic search: ✅ Attempted\n- Found 0 graph results and 0 semantic results\n\nTo get better results, ensure your database connections are properly configured.\n                \nProcessing time: 1215.11ms",
+        "query": "Find VIP guest complaints",
+        "gremlin_query": null,
+        "context": null,
+        "execution_time_ms": 1215.5656814575195,
+        "development_mode": true
+      },
+      "execution_time_ms": 1215.5656814575195
+    },
+    {
+      "test": "Maintenance Issues",
+      "status": "success",
+      "query": "What are the maintenance problems?",
+      "response": {
+        "answer": "I'm running in development mode and couldn't fully process your query: \"What are the maintenance problems?\"\n\nHere's what I tried:\n- Generated Gremlin query: g.V().hasLabel('Aspect').has('name', 'maintenance').in('ANALYZES_ASPECT').in('HAS_ANALYSIS').out('HAS_REVIEW').values('text').limit(10)\n- Graph search: ❌ Not available\n- Semantic search: ✅ Attempted\n- Found 0 graph results and 0 semantic results\n\nTo get better results, ensure your database connections are properly configured.\n                \nProcessing time: 956.76ms",
+        "query": "What are the maintenance problems?",
+        "gremlin_query": null,
+        "context": null,
+        "execution_time_ms": 957.2582244873047,
+        "development_mode": true
+      },
+      "execution_time_ms": 957.2582244873047
+    },
+    {
+      "test": "Cleanliness Filter",
+      "status": "success",
+      "filters": {
+        "aspect": "cleanliness",
+        "sentiment": "negative"
+      },
+      "response": {
+        "filters": {
+          "aspect": "cleanliness",
+          "sentiment": "negative"
+        },
+        "gremlin_query": "g.V().hasLabel('Review').where(__.out('HAS_ANALYSIS').out('ANALYZES_ASPECT').has('name', 'cleanliness')).where(__.out('HAS_ANALYSIS').has('overall_sentiment', 'negative')).limit(20).valueMap().with('~tinkerpop.valueMap.tokens')",
+        "results": [],
+        "results_count": 0,
+        "summary": null,
+        "execution_time_ms": 2.4912357330322266,
+        "component_times": {
+          "query_generation": 0.022411346435546875,
+          "graph_search": 0.6999969482421875,
+          "summary_generation": 0.0045299530029296875
+        },
+        "query_complexity": "simple"
+      },
+      "execution_time_ms": 2.4912357330322266
+    },
+    {
+      "test": "Turkish Booking Reviews",
+      "status": "success",
+      "filters": {
+        "language": "tr",
+        "source": "booking"
+      },
+      "response": {
+        "filters": {
+          "language": "tr",
+          "source": "booking"
+        },
+        "gremlin_query": "g.V().hasLabel('Review').where(__.out('WRITTEN_IN').has('code', 'tr')).where(__.out('FROM_SOURCE').has('name', 'booking')).limit(20).valueMap().with('~tinkerpop.valueMap.tokens')",
+        "results": [],
+        "results_count": 0,
+        "summary": null,
+        "execution_time_ms": 2.422809600830078,
+        "component_times": {
+          "query_generation": 0.021219253540039062,
+          "graph_search": 0.7061958312988281,
+          "summary_generation": 0.003814697265625
+        },
+        "query_complexity": "simple"
+      },
+      "execution_time_ms": 2.422809600830078
+    },
+    {
+      "test": "VIP High Ratings",
+      "status": "success",
+      "filters": {
+        "guest_type": "VIP",
+        "min_rating": 8
+      },
+      "response": {
+        "filters": {
+          "guest_type": "VIP",
+          "min_rating": 8.0
+        },
+        "gremlin_query": "g.V().hasLabel('Review').where(__.in('WROTE').has('type', 'VIP')).has('overall_score', gte(8.0)).limit(20).valueMap().with('~tinkerpop.valueMap.tokens')",
+        "results": [],
+        "results_count": 0,
+        "summary": null,
+        "execution_time_ms": 0.8521080017089844,
+        "component_times": {
+          "query_generation": 0.00762939453125,
+          "graph_search": 0.24175643920898438,
+          "summary_generation": 0.0007152557373046875
+        },
+        "query_complexity": "simple"
+      },
+      "execution_time_ms": 0.8521080017089844
+    }
+  ],
+  "summary": {
+    "total": 8,
+    "successful": 7,
+    "failed": 1
+  }
+}
