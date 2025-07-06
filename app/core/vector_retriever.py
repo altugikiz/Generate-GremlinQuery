@@ -219,11 +219,18 @@ class VectorRetriever:
             List of SemanticResult objects with content, scores, and metadata
         """
         if not self._is_initialized:
+            logger.error("❌ Vector retriever not initialized")
             raise RuntimeError("Vector retriever not initialized")
         
         if self.index.ntotal == 0:
-            logger.warning("No documents in index")
+            logger.warning("⚠️  No documents in index")
             return []
+        
+        # Add enhanced logging for debugging
+        logger.info(f"🔍 Vector retriever search: '{query}'")
+        logger.info(f"📊 Index has {self.index.ntotal} documents, {len(self.documents)} document texts, {len(self.metadata)} metadata entries")
+        logger.info(f"🎯 Parameters: top_k={top_k}, min_score={min_score}")
+        logger.info(f"🔧 Filters: {filters}")
         
         start_time = time.time()
         
@@ -232,22 +239,33 @@ class VectorRetriever:
             
             # Generate query embedding
             query_embedding = await self._generate_embeddings([query])
+            logger.info(f"🧠 Generated query embedding: shape={query_embedding.shape}, sample={query_embedding[0][:3]}")
             
             # Search in FAISS index
-            distances, indices = self.index.search(
-                query_embedding, 
-                min(top_k * 2, self.index.ntotal)
-            )
+            search_k = min(top_k * 2, self.index.ntotal)
+            distances, indices = self.index.search(query_embedding, search_k)
+            
+            logger.info(f"📈 FAISS search completed: requested {search_k} candidates")
+            logger.info(f"📈 Returned {len(distances[0])} distances and {len(indices[0])} indices")
+            logger.debug(f"🔢 Raw distances: {distances[0][:10]}")  # Log first 10 distances
+            logger.debug(f"🔢 Raw indices: {indices[0][:10]}")  # Log first 10 indices
             
             results = []
-            for distance, idx in zip(distances[0], indices[0]):
+            for i, (distance, idx) in enumerate(zip(distances[0], indices[0])):
                 if idx == -1:  # Invalid index
+                    logger.debug(f"⚠️  Skipping invalid index at position {i}")
+                    continue
+                
+                # Check index bounds
+                if idx >= len(self.documents) or idx >= len(self.metadata):
+                    logger.warning(f"⚠️  Index {idx} out of bounds (docs: {len(self.documents)}, meta: {len(self.metadata)})")
                     continue
                 
                 # Convert distance to similarity score (0-1, higher is better)
                 similarity = 1.0 / (1.0 + distance)
                 
                 if similarity < min_score:
+                    logger.debug(f"⚠️  Similarity {similarity:.4f} below threshold {min_score} at position {i}")
                     continue
                 
                 # Get document and metadata
@@ -256,6 +274,7 @@ class VectorRetriever:
                 
                 # Apply filters if specified
                 if filters and not self._matches_filters(meta, filters):
+                    logger.debug(f"⚠️  Document {idx} filtered out by metadata filters")
                     continue
                 
                 result = SemanticResult(
@@ -266,6 +285,8 @@ class VectorRetriever:
                 )
                 results.append(result)
                 
+                logger.debug(f"✅ Added result {len(results)}: score={similarity:.4f}, doc_id={meta.get('doc_id', idx)}, content='{doc[:50]}...'")
+                
                 if len(results) >= top_k:
                     break
             
@@ -273,7 +294,14 @@ class VectorRetriever:
             self._search_count += 1
             self._total_search_time += execution_time
             
-            logger.debug(f"Retrieved {len(results)} documents with scores in {execution_time:.2f}ms")
+            logger.info(f"🎉 Search completed in {execution_time:.2f}ms, found {len(results)} results")
+            if results:
+                logger.info(f"📋 Top result: score={results[0].score:.4f}, content='{results[0].content[:50]}...'")
+                logger.info(f"📋 Lowest result: score={results[-1].score:.4f}, content='{results[-1].content[:50]}...'")
+            else:
+                logger.warning("⚠️  No results found - check query relevance or lower min_score")
+                logger.info(f"💡 Suggestion: Try with min_score=0.0 to see all results")
+            
             return results
             
         except Exception as e:
@@ -426,6 +454,20 @@ class VectorRetriever:
         except Exception as e:
             logger.error(f"Failed to save index: {e}")
             raise
+    
+    async def get_query_embedding(self, query: str) -> Optional[List[float]]:
+        """Get embedding for a query string."""
+        try:
+            if not self._is_initialized:
+                logger.warning("Vector retriever not initialized")
+                return None
+            
+            embedding = await self._generate_embeddings([query])
+            return embedding[0].tolist() if len(embedding) > 0 else None
+            
+        except Exception as e:
+            logger.error(f"Failed to get query embedding: {e}")
+            return None
     
     async def get_statistics(self) -> Dict[str, Any]:
         """Get vector retriever statistics."""

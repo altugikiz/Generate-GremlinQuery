@@ -38,12 +38,39 @@ class APITester:
             
             execution_time = (time.time() - start_time) * 1000
             
-            return {
-                "status": "success" if response.status_code == 200 else "error",
-                "status_code": response.status_code,
-                "execution_time_ms": execution_time,
-                "response": response.json() if response.status_code == 200 else response.text
-            }
+            # Try to parse JSON response for both success and error cases
+            try:
+                response_json = response.json()
+            except ValueError:
+                response_json = {"raw_response": response.text}
+            
+            if response.status_code == 200:
+                return {
+                    "status": "success",
+                    "status_code": response.status_code,
+                    "execution_time_ms": execution_time,
+                    "response": response_json
+                }
+            else:
+                # Extract error message from structured error response
+                error_message = "Unknown error"
+                if isinstance(response_json, dict):
+                    if "detail" in response_json:
+                        detail = response_json["detail"]
+                        if isinstance(detail, dict):
+                            error_message = detail.get("message", detail.get("error", str(detail)))
+                        else:
+                            error_message = str(detail)
+                    elif "message" in response_json:
+                        error_message = response_json["message"]
+                
+                return {
+                    "status": "error",
+                    "status_code": response.status_code,
+                    "execution_time_ms": execution_time,
+                    "message": error_message,
+                    "response": response_json
+                }
             
         except Exception as e:
             return {"status": "error", "message": str(e)}

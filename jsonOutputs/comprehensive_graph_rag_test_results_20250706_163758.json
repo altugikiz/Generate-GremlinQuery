@@ -1,0 +1,549 @@
+{
+  "summary": {
+    "total_tests": 14,
+    "overall_pass": 12,
+    "overall_warn": 1,
+    "overall_fail": 1,
+    "overall_skip": 0,
+    "success_rate": "85.7%",
+    "avg_execution_time_ms": 6552.824650491987
+  },
+  "component_analysis": {
+    "Natural Language → Gremlin": {
+      "total": 14,
+      "pass": 11,
+      "warn": 1,
+      "fail": 2,
+      "skip": 0,
+      "avg_time_ms": 5061.213765825544
+    },
+    "Gremlin Query Execution": {
+      "total": 12,
+      "pass": 0,
+      "warn": 0,
+      "fail": 0,
+      "skip": 12,
+      "avg_time_ms": 4.370629787445068
+    },
+    "Full RAG Pipeline": {
+      "total": 14,
+      "pass": 12,
+      "warn": 0,
+      "fail": 2,
+      "skip": 0,
+      "avg_time_ms": 1484.5398664474487
+    },
+    "Error Handling": {
+      "total": 0,
+      "pass": 0,
+      "warn": 0,
+      "fail": 0,
+      "skip": 0,
+      "avg_time_ms": 0
+    }
+  },
+  "language_analysis": {
+    "en": {
+      "total": 10,
+      "pass": 8,
+      "warn": 1,
+      "fail": 1
+    },
+    "tr": {
+      "total": 4,
+      "pass": 4,
+      "warn": 0,
+      "fail": 0
+    }
+  },
+  "category_analysis": {
+    "Hotel Analysis": {
+      "total": 2,
+      "pass": 2,
+      "warn": 0,
+      "fail": 0
+    },
+    "Guest Feedback": {
+      "total": 2,
+      "pass": 2,
+      "warn": 0,
+      "fail": 0
+    },
+    "VIP Management": {
+      "total": 2,
+      "pass": 2,
+      "warn": 0,
+      "fail": 0
+    },
+    "Operations": {
+      "total": 2,
+      "pass": 2,
+      "warn": 0,
+      "fail": 0
+    },
+    "Location Analysis": {
+      "total": 1,
+      "pass": 1,
+      "warn": 0,
+      "fail": 0
+    },
+    "Complex Analysis": {
+      "total": 1,
+      "pass": 0,
+      "warn": 1,
+      "fail": 0
+    },
+    "Trend Analysis": {
+      "total": 1,
+      "pass": 1,
+      "warn": 0,
+      "fail": 0
+    },
+    "Edge Cases": {
+      "total": 3,
+      "pass": 2,
+      "warn": 0,
+      "fail": 1
+    }
+  },
+  "detailed_results": [
+    {
+      "test_id": "en_hotel_service",
+      "name": "Hotel Service Quality Analysis",
+      "language": "en",
+      "category": "Hotel Analysis",
+      "query": "Find hotels with excellent service ratings",
+      "overall_status": "PASS",
+      "total_time_ms": 8887.130737304688,
+      "errors": [
+        "Execution: Database not available (development mode)"
+      ],
+      "components": [
+        {
+          "component": "Natural Language → Gremlin",
+          "status": "PASS",
+          "execution_time_ms": 7705.910921096802,
+          "error": null
+        },
+        {
+          "component": "Gremlin Query Execution",
+          "status": "SKIP",
+          "execution_time_ms": 3.701925277709961,
+          "error": "Database not available (development mode)"
+        },
+        {
+          "component": "Full RAG Pipeline",
+          "status": "PASS",
+          "execution_time_ms": 1174.473762512207,
+          "error": null
+        }
+      ]
+    },
+    {
+      "test_id": "en_guest_complaints",
+      "name": "Guest Complaint Investigation",
+      "language": "en",
+      "category": "Guest Feedback",
+      "query": "Show me guest complaints about room cleanliness",
+      "overall_status": "PASS",
+      "total_time_ms": 7043.1928634643555,
+      "errors": [
+        "Execution: Database not available (development mode)"
+      ],
+      "components": [
+        {
+          "component": "Natural Language → Gremlin",
+          "status": "PASS",
+          "execution_time_ms": 5984.355926513672,
+          "error": null
+        },
+        {
+          "component": "Gremlin Query Execution",
+          "status": "SKIP",
+          "execution_time_ms": 5.698919296264648,
+          "error": "Database not available (development mode)"
+        },
+        {
+          "component": "Full RAG Pipeline",
+          "status": "PASS",
+          "execution_time_ms": 1049.168586730957,
+          "error": null
+        }
+      ]
+    },
+    {
+      "test_id": "en_vip_experience",
+      "name": "VIP Guest Experience Analysis",
+      "language": "en",
+      "category": "VIP Management",
+      "query": "What are VIP guests saying about their experience?",
+      "overall_status": "PASS",
+      "total_time_ms": 5215.6126499176025,
+      "errors": [
+        "Execution: Database not available (development mode)"
+      ],
+      "components": [
+        {
+          "component": "Natural Language → Gremlin",
+          "status": "PASS",
+          "execution_time_ms": 4322.674989700317,
+          "error": null
+        },
+        {
+          "component": "Gremlin Query Execution",
+          "status": "SKIP",
+          "execution_time_ms": 5.338191986083984,
+          "error": "Database not available (development mode)"
+        },
+        {
+          "component": "Full RAG Pipeline",
+          "status": "PASS",
+          "execution_time_ms": 884.2430114746094,
+          "error": null
+        }
+      ]
+    },
+    {
+      "test_id": "en_maintenance_issues",
+      "name": "Maintenance Issue Tracking",
+      "language": "en",
+      "category": "Operations",
+      "query": "Show maintenance problems reported in hotel rooms",
+      "overall_status": "PASS",
+      "total_time_ms": 6164.626836776733,
+      "errors": [
+        "Execution: Database not available (development mode)"
+      ],
+      "components": [
+        {
+          "component": "Natural Language → Gremlin",
+          "status": "PASS",
+          "execution_time_ms": 4972.761392593384,
+          "error": null
+        },
+        {
+          "component": "Gremlin Query Execution",
+          "status": "SKIP",
+          "execution_time_ms": 5.489587783813477,
+          "error": "Database not available (development mode)"
+        },
+        {
+          "component": "Full RAG Pipeline",
+          "status": "PASS",
+          "execution_time_ms": 1181.1776161193848,
+          "error": null
+        }
+      ]
+    },
+    {
+      "test_id": "en_location_reviews",
+      "name": "Location and Accessibility Reviews",
+      "language": "en",
+      "category": "Location Analysis",
+      "query": "Find reviews mentioning hotel location and accessibility",
+      "overall_status": "PASS",
+      "total_time_ms": 5560.544967651367,
+      "errors": [
+        "Execution: Database not available (development mode)"
+      ],
+      "components": [
+        {
+          "component": "Natural Language → Gremlin",
+          "status": "PASS",
+          "execution_time_ms": 4699.483633041382,
+          "error": null
+        },
+        {
+          "component": "Gremlin Query Execution",
+          "status": "SKIP",
+          "execution_time_ms": 6.0291290283203125,
+          "error": "Database not available (development mode)"
+        },
+        {
+          "component": "Full RAG Pipeline",
+          "status": "PASS",
+          "execution_time_ms": 850.2335548400879,
+          "error": null
+        }
+      ]
+    },
+    {
+      "test_id": "tr_hotel_service",
+      "name": "Turkish Hotel Service Query",
+      "language": "tr",
+      "category": "Hotel Analysis",
+      "query": "Otellerin hizmet puanlarını göster",
+      "overall_status": "PASS",
+      "total_time_ms": 8536.388158798218,
+      "errors": [
+        "Execution: Database not available (development mode)"
+      ],
+      "components": [
+        {
+          "component": "Natural Language → Gremlin",
+          "status": "PASS",
+          "execution_time_ms": 5050.304174423218,
+          "error": null
+        },
+        {
+          "component": "Gremlin Query Execution",
+          "status": "SKIP",
+          "execution_time_ms": 4.615545272827148,
+          "error": "Database not available (development mode)"
+        },
+        {
+          "component": "Full RAG Pipeline",
+          "status": "PASS",
+          "execution_time_ms": 3478.224754333496,
+          "error": null
+        }
+      ]
+    },
+    {
+      "test_id": "tr_cleanliness_complaints",
+      "name": "Turkish Cleanliness Complaints",
+      "language": "tr",
+      "category": "Guest Feedback",
+      "query": "Temizlik ile ilgili şikayetleri bul",
+      "overall_status": "PASS",
+      "total_time_ms": 10493.298292160034,
+      "errors": [
+        "Execution: Database not available (development mode)"
+      ],
+      "components": [
+        {
+          "component": "Natural Language → Gremlin",
+          "status": "PASS",
+          "execution_time_ms": 6962.397813796997,
+          "error": null
+        },
+        {
+          "component": "Gremlin Query Execution",
+          "status": "SKIP",
+          "execution_time_ms": 3.463268280029297,
+          "error": "Database not available (development mode)"
+        },
+        {
+          "component": "Full RAG Pipeline",
+          "status": "PASS",
+          "execution_time_ms": 3524.315357208252,
+          "error": null
+        }
+      ]
+    },
+    {
+      "test_id": "tr_vip_issues",
+      "name": "Turkish VIP Guest Issues",
+      "language": "tr",
+      "category": "VIP Management",
+      "query": "VIP misafirlerin sorunlarını göster",
+      "overall_status": "PASS",
+      "total_time_ms": 10579.39076423645,
+      "errors": [
+        "Execution: Database not available (development mode)"
+      ],
+      "components": [
+        {
+          "component": "Natural Language → Gremlin",
+          "status": "PASS",
+          "execution_time_ms": 7070.781469345093,
+          "error": null
+        },
+        {
+          "component": "Gremlin Query Execution",
+          "status": "SKIP",
+          "execution_time_ms": 2.8171539306640625,
+          "error": "Database not available (development mode)"
+        },
+        {
+          "component": "Full RAG Pipeline",
+          "status": "PASS",
+          "execution_time_ms": 3503.2427310943604,
+          "error": null
+        }
+      ]
+    },
+    {
+      "test_id": "tr_room_maintenance",
+      "name": "Turkish Room Maintenance",
+      "language": "tr",
+      "category": "Operations",
+      "query": "Oda bakım sorunlarını listele",
+      "overall_status": "PASS",
+      "total_time_ms": 8871.966123580933,
+      "errors": [
+        "Execution: Database not available (development mode)"
+      ],
+      "components": [
+        {
+          "component": "Natural Language → Gremlin",
+          "status": "PASS",
+          "execution_time_ms": 7638.322114944458,
+          "error": null
+        },
+        {
+          "component": "Gremlin Query Execution",
+          "status": "SKIP",
+          "execution_time_ms": 4.017114639282227,
+          "error": "Database not available (development mode)"
+        },
+        {
+          "component": "Full RAG Pipeline",
+          "status": "PASS",
+          "execution_time_ms": 1226.1040210723877,
+          "error": null
+        }
+      ]
+    },
+    {
+      "test_id": "en_complex_filter",
+      "name": "Multi-Factor Hotel Analysis",
+      "language": "en",
+      "category": "Complex Analysis",
+      "query": "Find luxury hotels with poor cleanliness but excellent service",
+      "overall_status": "WARN",
+      "total_time_ms": 8549.041986465454,
+      "errors": [
+        "Execution: Database not available (development mode)"
+      ],
+      "components": [
+        {
+          "component": "Natural Language → Gremlin",
+          "status": "WARN",
+          "execution_time_ms": 6511.756181716919,
+          "error": null
+        },
+        {
+          "component": "Gremlin Query Execution",
+          "status": "SKIP",
+          "execution_time_ms": 4.425287246704102,
+          "error": "Database not available (development mode)"
+        },
+        {
+          "component": "Full RAG Pipeline",
+          "status": "PASS",
+          "execution_time_ms": 2029.6151638031006,
+          "error": null
+        }
+      ]
+    },
+    {
+      "test_id": "en_temporal_analysis",
+      "name": "Temporal Trend Analysis",
+      "language": "en",
+      "category": "Trend Analysis",
+      "query": "Show recent guest feedback trends for room quality",
+      "overall_status": "PASS",
+      "total_time_ms": 7474.4813442230225,
+      "errors": [
+        "Execution: Database not available (development mode)"
+      ],
+      "components": [
+        {
+          "component": "Natural Language → Gremlin",
+          "status": "PASS",
+          "execution_time_ms": 6324.364900588989,
+          "error": null
+        },
+        {
+          "component": "Gremlin Query Execution",
+          "status": "SKIP",
+          "execution_time_ms": 2.824544906616211,
+          "error": "Database not available (development mode)"
+        },
+        {
+          "component": "Full RAG Pipeline",
+          "status": "PASS",
+          "execution_time_ms": 1145.0302600860596,
+          "error": null
+        }
+      ]
+    },
+    {
+      "test_id": "edge_empty_query",
+      "name": "Empty Query Test",
+      "language": "en",
+      "category": "Edge Cases",
+      "query": "",
+      "overall_status": "PASS",
+      "total_time_ms": 6.90913200378418,
+      "errors": [
+        "Translation: HTTP 422: {\"detail\":[{\"type\":\"string_too_short\",\"loc\":[\"body\",\"prompt\"],\"msg\":\"String should have at least 1 character\",\"input\":\"\",\"ctx\":{\"min_length\":1}}]}",
+        "RAG Pipeline: HTTP 422: {\"detail\":[{\"type\":\"string_too_short\",\"loc\":[\"body\",\"query\"],\"msg\":\"String should have at least 1 character\",\"input\":\"\",\"ctx\":{\"min_length\":1}}]}"
+      ],
+      "components": [
+        {
+          "component": "Natural Language → Gremlin",
+          "status": "FAIL",
+          "execution_time_ms": 3.8433074951171875,
+          "error": "HTTP 422: {\"detail\":[{\"type\":\"string_too_short\",\"loc\":[\"body\",\"prompt\"],\"msg\":\"String should have at least 1 character\",\"input\":\"\",\"ctx\":{\"min_length\":1}}]}"
+        },
+        {
+          "component": "Full RAG Pipeline",
+          "status": "FAIL",
+          "execution_time_ms": 1.9402503967285156,
+          "error": "HTTP 422: {\"detail\":[{\"type\":\"string_too_short\",\"loc\":[\"body\",\"query\"],\"msg\":\"String should have at least 1 character\",\"input\":\"\",\"ctx\":{\"min_length\":1}}]}"
+        }
+      ]
+    },
+    {
+      "test_id": "edge_very_long_query",
+      "name": "Very Long Query Test",
+      "language": "en",
+      "category": "Edge Cases",
+      "query": "Find hotels with excellent service and great location and amazing cleanliness and wonderful staff and perfect amenities and outstanding breakfast and incredible room quality and fantastic value for money and exceptional customer service and remarkable maintenance standards and superior accessibility features and excellent parking facilitiesFind hotels with excellent service and great location and amazing cleanliness and wonderful staff and perfect amenities and outstanding breakfast and incredible room quality and fantastic value for money and exceptional customer service and remarkable maintenance standards and superior accessibility features and excellent parking facilitiesFind hotels with excellent service and great location and amazing cleanliness and wonderful staff and perfect amenities and outstanding breakfast and incredible room quality and fantastic value for money and exceptional customer service and remarkable maintenance standards and superior accessibility features and excellent parking facilities",
+      "overall_status": "FAIL",
+      "total_time_ms": 13.272523880004883,
+      "errors": [
+        "Translation: HTTP 422: {\"detail\":[{\"type\":\"string_too_long\",\"loc\":[\"body\",\"prompt\"],\"msg\":\"String should have at most 500 characters\",\"input\":\"Find hotels with excellent service and great location and amazing cleanliness and wonderful staff and perfect amenities and outstanding breakfast and incredible room quality and fantastic value for money and exceptional customer service and remarkable maintenance standards and superior accessibility features and excellent parking facilitiesFind hotels with excellent service and great location and amazing cleanliness and wonderful staff and perfect amenities and outstanding breakfast and incredible room quality and fantastic value for money and exceptional customer service and remarkable maintenance standards and superior accessibility features and excellent parking facilitiesFind hotels with excellent service and great location and amazing cleanliness and wonderful staff and perfect amenities and outstanding breakfast and incredible room quality and fantastic value for money and exceptional customer service and remarkable maintenance standards and superior accessibility features and excellent parking facilities\",\"ctx\":{\"max_length\":500}}]}",
+        "RAG Pipeline: HTTP 422: {\"detail\":[{\"type\":\"string_too_long\",\"loc\":[\"body\",\"query\"],\"msg\":\"String should have at most 1000 characters\",\"input\":\"Find hotels with excellent service and great location and amazing cleanliness and wonderful staff and perfect amenities and outstanding breakfast and incredible room quality and fantastic value for money and exceptional customer service and remarkable maintenance standards and superior accessibility features and excellent parking facilitiesFind hotels with excellent service and great location and amazing cleanliness and wonderful staff and perfect amenities and outstanding breakfast and incredible room quality and fantastic value for money and exceptional customer service and remarkable maintenance standards and superior accessibility features and excellent parking facilitiesFind hotels with excellent service and great location and amazing cleanliness and wonderful staff and perfect amenities and outstanding breakfast and incredible room quality and fantastic value for money and exceptional customer service and remarkable maintenance standards and superior accessibility features and excellent parking facilities\",\"ctx\":{\"max_length\":1000}}]}"
+      ],
+      "components": [
+        {
+          "component": "Natural Language → Gremlin",
+          "status": "FAIL",
+          "execution_time_ms": 4.39453125,
+          "error": "HTTP 422: {\"detail\":[{\"type\":\"string_too_long\",\"loc\":[\"body\",\"prompt\"],\"msg\":\"String should have at most 500 characters\",\"input\":\"Find hotels with excellent service and great location and amazing cleanliness and wonderful staff and perfect amenities and outstanding breakfast and incredible room quality and fantastic value for money and exceptional customer service and remarkable maintenance standards and superior accessibility features and excellent parking facilitiesFind hotels with excellent service and great location and amazing cleanliness and wonderful staff and perfect amenities and outstanding breakfast and incredible room quality and fantastic value for money and exceptional customer service and remarkable maintenance standards and superior accessibility features and excellent parking facilitiesFind hotels with excellent service and great location and amazing cleanliness and wonderful staff and perfect amenities and outstanding breakfast and incredible room quality and fantastic value for money and exceptional customer service and remarkable maintenance standards and superior accessibility features and excellent parking facilities\",\"ctx\":{\"max_length\":500}}]}"
+        },
+        {
+          "component": "Full RAG Pipeline",
+          "status": "FAIL",
+          "execution_time_ms": 5.959033966064453,
+          "error": "HTTP 422: {\"detail\":[{\"type\":\"string_too_long\",\"loc\":[\"body\",\"query\"],\"msg\":\"String should have at most 1000 characters\",\"input\":\"Find hotels with excellent service and great location and amazing cleanliness and wonderful staff and perfect amenities and outstanding breakfast and incredible room quality and fantastic value for money and exceptional customer service and remarkable maintenance standards and superior accessibility features and excellent parking facilitiesFind hotels with excellent service and great location and amazing cleanliness and wonderful staff and perfect amenities and outstanding breakfast and incredible room quality and fantastic value for money and exceptional customer service and remarkable maintenance standards and superior accessibility features and excellent parking facilitiesFind hotels with excellent service and great location and amazing cleanliness and wonderful staff and perfect amenities and outstanding breakfast and incredible room quality and fantastic value for money and exceptional customer service and remarkable maintenance standards and superior accessibility features and excellent parking facilities\",\"ctx\":{\"max_length\":1000}}]}"
+        }
+      ]
+    },
+    {
+      "test_id": "edge_nonsense_query",
+      "name": "Nonsense Query Test",
+      "language": "en",
+      "category": "Edge Cases",
+      "query": "Purple elephants dancing with quantum spaghetti in the hotel matrix",
+      "overall_status": "PASS",
+      "total_time_ms": 4343.688726425171,
+      "errors": [
+        "Execution: Database not available (development mode)"
+      ],
+      "components": [
+        {
+          "component": "Natural Language → Gremlin",
+          "status": "PASS",
+          "execution_time_ms": 3605.6413650512695,
+          "error": null
+        },
+        {
+          "component": "Gremlin Query Execution",
+          "status": "SKIP",
+          "execution_time_ms": 4.026889801025391,
+          "error": "Database not available (development mode)"
+        },
+        {
+          "component": "Full RAG Pipeline",
+          "status": "PASS",
+          "execution_time_ms": 729.8300266265869,
+          "error": null
+        }
+      ]
+    }
+  ]
+}

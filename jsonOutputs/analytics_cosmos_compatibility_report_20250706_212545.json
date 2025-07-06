@@ -1,0 +1,81 @@
+{
+  "summary": {
+    "total_tests": 10,
+    "passed": 3,
+    "failed": 7,
+    "success_rate": 30.0
+  },
+  "test_results": [
+    {
+      "test_name": "Group Statistics Endpoint",
+      "passed": true,
+      "details": "All compatibility checks passed",
+      "query": "\n        g.V().hasLabel('HotelGroup')\n         .limit(50)\n         .valueMap(true)\n        ",
+      "timestamp": "2025-07-06T21:25:45.325082"
+    },
+    {
+      "test_name": "Hotel Statistics Endpoint",
+      "passed": false,
+      "details": "Failed checks: ['has_limit']",
+      "query": "\n        g.V().hasLabel('Hotel')\n         .range(0, 10)\n         .valueMap(true)\n        ",
+      "timestamp": "2025-07-06T21:25:45.326461"
+    },
+    {
+      "test_name": "Hotel Averages Endpoint",
+      "passed": true,
+      "details": "All compatibility checks passed",
+      "query": "\n        g.V().hasLabel('Hotel').has('name', 'Test Hotel')\n         .limit(1)\n         .valueMap(true)\n        ",
+      "timestamp": "2025-07-06T21:25:45.327811"
+    },
+    {
+      "test_name": "Language Distribution Endpoint",
+      "passed": false,
+      "details": "Failed checks: ['has_valuemap_true']",
+      "query": "\n        g.V().hasLabel('Hotel').has('id', 'hotel1')\n         .limit(1)\n         .project('hotel_name', 'language_stats', 'language_ratings', 'total_reviews')\n         .by(__.values('name'))\n         .by(__.in('BELONGS_TO').in('HAS_REVIEW').out('WRITTEN_IN')\n             .groupCount().by(__.values('code')))\n         .by(__.in('BELONGS_TO').in('HAS_REVIEW').group()\n             .by(__.out('WRITTEN_IN').values('code'))\n             .by(__.values('overall_score').mean()))\n         .by(__.in('BELONGS_TO').in('HAS_REVIEW').count())\n        ",
+      "timestamp": "2025-07-06T21:25:45.329258"
+    },
+    {
+      "test_name": "Source Distribution Endpoint",
+      "passed": false,
+      "details": "Failed checks: ['has_valuemap_true']",
+      "query": "\n        g.V().hasLabel('Hotel').has('name', 'Test Hotel')\n         .limit(1)\n         .project('hotel_id', 'source_stats', 'source_ratings', 'total_reviews')\n         .by(__.values('id'))\n         .by(__.in('BELONGS_TO').in('HAS_REVIEW').out('FROM_SOURCE')\n             .groupCount().by(__.values('name')))\n         .by(__.in('BELONGS_TO').in('HAS_REVIEW').group()\n             .by(__.out('FROM_SOURCE').values('name'))\n             .by(__.values('overall_score').mean()))\n         .by(__.in('BELONGS_TO').in('HAS_REVIEW').count())\n        ",
+      "timestamp": "2025-07-06T21:25:45.330876"
+    },
+    {
+      "test_name": "Accommodation Metrics Endpoint",
+      "passed": false,
+      "details": "Failed checks: ['has_valuemap_true']",
+      "query": "\n        g.V().hasLabel('Hotel').has('name', 'Test Hotel')\n         .limit(1)\n         .project('hotel_id', 'accommodation_count')\n         .by(__.values('id'))\n         .by(__.out('OFFERS').count())\n        ",
+      "timestamp": "2025-07-06T21:25:45.332241"
+    },
+    {
+      "test_name": "Aspect Breakdown Endpoint",
+      "passed": false,
+      "details": "Failed checks: ['has_valuemap_true']",
+      "query": "\n        g.V().hasLabel('Hotel').has('name', 'Test Hotel')\n         .limit(1)\n         .in('BELONGS_TO').in('HAS_REVIEW').in('HAS_ANALYSIS')\n         .out('ANALYZES_ASPECT')\n         .groupCount().by(__.values('name'))\n         .limit(50)\n        ",
+      "timestamp": "2025-07-06T21:25:45.333408"
+    },
+    {
+      "test_name": "Query Reviews Endpoint",
+      "passed": false,
+      "details": "Some queries missing limits",
+      "query": "",
+      "timestamp": "2025-07-06T21:25:45.335237"
+    },
+    {
+      "test_name": "Error Logging Function",
+      "passed": true,
+      "details": "Error logging working correctly",
+      "query": "",
+      "timestamp": "2025-07-06T21:25:45.335666"
+    },
+    {
+      "test_name": "Safe Property Access Function",
+      "passed": false,
+      "details": "Some safe property access tests failed",
+      "query": "",
+      "timestamp": "2025-07-06T21:25:45.335848"
+    }
+  ],
+  "generated_at": "2025-07-06T21:25:45.337946"
+}

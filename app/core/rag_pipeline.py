@@ -10,7 +10,7 @@ import google.generativeai as genai
 from loguru import logger
 
 from app.core.gremlin_client import GremlinClient
-from app.core.schema_gremlin_client import SchemaAwareGremlinClient
+from app.core.sync_gremlin_client import SyncGremlinClient
 from app.core.vector_store import VectorStore
 from app.core.graph_query_llm import GraphQueryLLM
 from app.core.vector_retriever import VectorRetriever
@@ -35,7 +35,7 @@ class EnhancedRAGPipeline:
     
     def __init__(
         self,
-        gremlin_client: Optional[SchemaAwareGremlinClient] = None,
+        gremlin_client: Optional[SyncGremlinClient] = None,
         vector_store: Optional[VectorStore] = None,
         graph_query_llm: Optional[GraphQueryLLM] = None,
         vector_retriever: Optional[VectorRetriever] = None,
@@ -142,10 +142,9 @@ class EnhancedRAGPipeline:
             if request.include_embeddings:
                 semantic_results = await self._add_embeddings_to_results(semantic_results)
             
-            # Add development mode info to metadata
-            if self.development_mode:
-                search_metadata["development_mode"] = True
-                search_metadata["note"] = "Running in development mode - some features may be limited"
+            # Add search metadata for diagnostics (no development mode info needed)
+            search_metadata["production_mode"] = True
+            search_metadata["note"] = "Running in production mode - all features enabled"
             
             result = HybridSearchResult(
                 query=request.query,
@@ -173,10 +172,14 @@ class EnhancedRAGPipeline:
         try:
             logger.debug(f"Performing graph search with max_results={max_results}")
             
-            # Check if gremlin client is available
+            # Check if gremlin client is available and connected
             if not self.gremlin_client:
-                logger.warning("Graph search not available in development mode")
-                return GraphResult(nodes=[], edges=[], total_count=0, execution_time_ms=0.0)
+                logger.error("Graph search failed: Gremlin client not available")
+                raise RuntimeError("Graph database client not initialized")
+            
+            if not self.gremlin_client.is_connected:
+                logger.error("Graph search failed: Gremlin client not connected")
+                raise RuntimeError("Graph database connection not available")
             
             # Try different graph search strategies
             
@@ -215,9 +218,9 @@ class EnhancedRAGPipeline:
             logger.debug(f"Performing semantic search with max_results={max_results}")
             
             # Check if vector store is available
-            if not self.vector_store:
-                logger.warning("Semantic search not available in development mode")
-                return []
+            if not self.vector_store and not self.vector_retriever:
+                logger.error("Semantic search failed: No vector store or retriever available")
+                raise RuntimeError("Vector search not initialized")
             
             results = await self.vector_store.search(
                 query=query,
@@ -461,23 +464,39 @@ Answer:"""
                     logger.info(f"Graph RAG completed in {execution_time:.2f}ms")
                     return response
             
-            # Fallback response
-            if self.development_mode:
-                execution_time = (time.time() - start_time) * 1000
-                fallback_response = f"""I'm running in development mode and couldn't fully process your query: "{user_query}"
+            # Production mode - require proper functionality
+            execution_time = (time.time() - start_time) * 1000
+            logger.warning(f"Graph RAG query incomplete - missing components or data in {execution_time:.2f}ms")
+            
+            # Detailed diagnostic information
+            diagnostics = []
+            if not gremlin_query:
+                diagnostics.append("❌ Failed to generate Gremlin query")
+            if not self.gremlin_client:
+                diagnostics.append("❌ Gremlin client not available")
+            elif not graph_results.nodes:
+                diagnostics.append("⚠️ No graph results found")
+            if not (self.vector_store or self.vector_retriever):
+                diagnostics.append("❌ Vector search not available")
+            elif not semantic_results:
+                diagnostics.append("⚠️ No semantic results found")
+            
+            return f"""I couldn't find sufficient information to answer your question: "{user_query}"
 
-Here's what I tried:
+System Status:
 - Generated Gremlin query: {gremlin_query or 'Failed to generate'}
-- Graph search: {'✅ Attempted' if self.gremlin_client else '❌ Not available'}
-- Semantic search: {'✅ Attempted' if (self.vector_store or self.vector_retriever) else '❌ Not available'}
-- Found {len(graph_results.nodes)} graph results and {len(semantic_results)} semantic results
+- Graph search results: {len(graph_results.nodes)} nodes found
+- Semantic search results: {len(semantic_results)} documents found
 
-To get better results, ensure your database connections are properly configured.
-                
+Issues detected:
+{chr(10).join(diagnostics)}
+
+Please verify that:
+1. The Cosmos DB Gremlin API is accessible and contains data
+2. The vector store is properly initialized with indexed documents
+3. Your query is clear and relates to available data
+
 Processing time: {execution_time:.2f}ms"""
-                return fallback_response
-            else:
-                return "I couldn't find relevant information to answer your question. Please try rephrasing your query or check if the system is properly configured."
             
         except Exception as e:
             logger.error(f"Graph RAG processing failed: {e}")

@@ -1,0 +1,406 @@
+{
+  "timestamp": "2025-07-06T18:16:05.391227",
+  "base_url": "http://localhost:8000",
+  "total_time_seconds": 27.464346885681152,
+  "statistics": {
+    "total_tests": 21,
+    "passed": 7,
+    "failed": 8,
+    "warnings": 6,
+    "success_rate": 33.33333333333333
+  },
+  "production_ready": false,
+  "test_suites": [
+    {
+      "name": "Health & Status",
+      "total_tests": 2,
+      "passed": 1,
+      "failed": 1,
+      "warnings": 0,
+      "success_rate": 50.0,
+      "results": [
+        {
+          "name": "System Health Check",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 272.5939750671387,
+          "details": "Unhealthy components: ['gremlin']",
+          "response_data": {
+            "status": "unhealthy",
+            "timestamp": "2025-07-06T18:15:38.200972",
+            "components": {
+              "gremlin": "error",
+              "vector_store": "healthy",
+              "rag_pipeline": "healthy"
+            },
+            "version": "1.0.0",
+            "uptime_seconds": 355.3450849056244,
+            "development_mode": false
+          },
+          "error": "System status: unhealthy"
+        },
+        {
+          "name": "Detailed Health Check",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 8.066177368164062,
+          "details": "Detailed health information available",
+          "response_data": {
+            "timestamp": "2025-07-06T18:15:38.203356",
+            "uptime_seconds": 355.34748101234436,
+            "services": {
+              "gremlin": {
+                "status": "error",
+                "error": "'SyncGremlinClient' object has no attribute 'get_statistics'"
+              },
+              "vector_store": {
+                "status": "ready",
+                "statistics": {
+                  "is_initialized": true,
+                  "document_count": 0,
+                  "index_size": 0,
+                  "embedding_dimension": 384,
+                  "search_count": 0,
+                  "total_search_time_ms": 0.0,
+                  "average_search_time_ms": 0.0,
+                  "index_count": 0,
+                  "model_name": "all-MiniLM-L6-v2"
+                }
+              },
+              "rag_pipeline": {
+                "status": "ready",
+                "statistics": {
+                  "pipeline": {
+                    "search_count": 0,
+                    "total_search_time_ms": 0.0,
+                    "average_search_time_ms": 0.0,
+                    "query_translation_count": 0,
+                    "total_translation_time_ms": 0.0,
+                    "average_translation_time_ms": 0.0,
+                    "model_provider": "gemini",
+                    "llm_model": "gemini-2.0-flash",
+                    "max_graph_results": 10,
+                    "max_semantic_results": 5,
+                    "development_mode": false
+                  },
+                  "gremlin": {
+                    "error": "'SyncGremlinClient' object has no attribute 'get_statistics'"
+                  },
+                  "vector_store": {
+                    "is_initialized": true,
+                    "document_count": 0,
+                    "index_size": 0,
+                    "embedding_dimension": 384,
+                    "search_count": 0,
+                    "total_search_time_ms": 0.0,
+                    "average_search_time_ms": 0.0,
+                    "index_count": 0,
+                    "model_name": "all-MiniLM-L6-v2"
+                  },
+                  "vector_retriever": {
+                    "is_initialized": true,
+                    "document_count": 0,
+                    "index_size": 0,
+                    "embedding_dimension": 384,
+                    "search_count": 0,
+                    "total_search_time_ms": 0.0,
+                    "average_search_time_ms": 0.0,
+                    "index_count": 0,
+                    "model_name": "all-MiniLM-L6-v2"
+                  }
+                }
+              }
+            },
+            "system": {
+              "cpu_percent": 7.7,
+              "memory_percent": 79.2,
+              "process_memory_mb": 502.98046875,
+              "process_cpu_percent": 0.0,
+              "disk_usage_percent": 67.1
+            },
+            "performance": {}
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "Gremlin Translation",
+      "total_tests": 5,
+      "passed": 4,
+      "failed": 0,
+      "warnings": 1,
+      "success_rate": 80.0,
+      "results": [
+        {
+          "name": "Turkish Hotel Query",
+          "status": "TestStatus.WARN",
+          "execution_time_ms": 3656.550884246826,
+          "details": "Query missing elements: ['valueMap', 'hotel_name']",
+          "response_data": {
+            "gremlin_query": "g.V().hasLabel('Hotel').has('country', 'Turkey').values('name').limit(10)",
+            "explanation": "Here's a breakdown of the Gremlin query:\n\n1.  **What this query is looking for:**\n\nThe query aims to find the names of hotels located in Turkey. It limits the number of hotel names returned to the first 10 found.\n\n2.  **How it traverses the graph:**\n\n*   `g.V()`:  Starts the traversal by considering all vertices (nodes) in the graph.\n*   `hasLabel('Hotel')`: Filters the vertices to only include those that are labeled as 'Hotel'.  This means it's now only considering hotels.\n*   `has('country', 'Turkey')`: Further filters the hotels, keeping only those located in the country 'Turkey'.\n*   `values('name')`: Extracts only the 'name' property from the remaining hotel vertices.\n*   `limit(10)`: Restricts the output to a maximum of 10 hotel names.\n\n3.  **What results it will return:**\n\nThe query will return a list (up to 10) of the names of hotels that are located in Turkey. Each element in the list will be a string representing the name of a hotel.",
+            "confidence_score": 0.9,
+            "execution_time_ms": 3652.5919437408447
+          },
+          "error": null
+        },
+        {
+          "name": "English Cleanliness Query",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 7980.589389801025,
+          "details": "Generated valid Gremlin query: g.V().hasLabel('Hotel').as('hotel').inE('HAS_REVIEW').outV().hasLabel('Review').as('review').inE('HA...",
+          "response_data": {
+            "gremlin_query": "g.V().hasLabel('Hotel').as('hotel').inE('HAS_REVIEW').outV().hasLabel('Review').as('review').inE('HAS_ANALYSIS').outV().hasLabel('Analysis').as('analysis').outE('ANALYZES_ASPECT').inV().hasLabel('Aspect').has('name', 'cleanliness').select('hotel').limit(10)",
+            "explanation": "Okay, let's break down that Gremlin query:\n\n1. **What this query is looking for:**\n\n   The query aims to find hotels that have reviews where the \"cleanliness\" aspect is analyzed. It ultimately wants to return a list of these *hotels*. Critically, it's limited to the first 10 hotels that match the criteria.\n\n2. **How it traverses the graph:**\n\n   Let's follow the query step-by-step:\n\n   *   `g.V().hasLabel('Hotel').as('hotel')`: This starts the traversal at all vertices labeled \"Hotel\".  The `as('hotel')` part is crucial: it assigns the label \"hotel\" to each of these hotel vertices. This allows us to refer back to the hotel later in the query.\n\n   *   `.inE('HAS_REVIEW').outV().hasLabel('Review').as('review')`: This part finds the reviews associated with the Hotels.\n        *   `inE('HAS_REVIEW')`:  It finds all incoming edges labeled \"HAS_REVIEW\" (meaning it's finding the edges that connect the reviews *to* the hotel).\n        *   `.outV()`: It then moves to the *outgoing* vertex of those edges. Since the \"HAS_REVIEW\" edge connects a Hotel to a Review, this step moves the traversal to the \"Review\" vertices.\n        *   `.hasLabel('Review')`: Filters to only ensure we are on `Review` vertices (though redundant, it adds clarity).\n        *   `.as('review')`:  Labels these Review vertices as \"review\" for later use.\n\n   *   `.inE('HAS_ANALYSIS').outV().hasLabel('Analysis').as('analysis')`: This part finds the analyses associated with the Reviews.\n        *   `inE('HAS_ANALYSIS')`: It finds all incoming edges labeled \"HAS_ANALYSIS\" connecting Analyses to Reviews.\n        *   `.outV()`: It moves to the outgoing vertex of those edges, which are the \"Analysis\" vertices.\n        *   `.hasLabel('Analysis')`: Filters to only ensure we are on `Analysis` vertices (though redundant, it adds clarity).\n        *   `.as('analysis')`: Labels these Analysis vertices as \"analysis\" for later use.\n\n   *   `.outE('ANALYZES_ASPECT').inV().hasLabel('Aspect').has('name', 'cleanliness')`: This part finds and filters for the \"cleanliness\" aspect that these analyses cover.\n        *    `.outE('ANALYZES_ASPECT')`: This step traverses *out* along the \"ANALYZES_ASPECT\" edge. It essentially says, \"find the edge that connects this analysis to the aspect it's analyzing\".\n        *   `.inV()`:  It then moves to the *incoming* vertex of that edge, which is the \"Aspect\" vertex.\n        *   `.hasLabel('Aspect')`: Filters to only ensure we are on `Aspect` vertices (though redundant, it adds clarity).\n        *   `.has('name', 'cleanliness')`:  Critically, this filters the Aspect vertices, keeping only those where the `name` property is equal to \"cleanliness\".\n\n   *   `.select('hotel')`: This is the crucial part that determines what is returned.  It says, \"From all the traversals we've done, select the vertices that we labeled as 'hotel'\".  So, even though we've gone through reviews, analyses, and aspects, we're only interested in the *hotels* that are part of this chain.\n\n   *   `.limit(10)`: Limits the number of results to the first 10 hotels found.\n\n3. **What results it will return:**\n\n   The query will return a list of up to 10 Hotel vertices (nodes) that have at least one review associated with them, and where at least one AI-generated analysis of those reviews specifically analyzes the \"cleanliness\" aspect. It returns *the hotel* not the review, analysis, or aspect.",
+            "confidence_score": 0.9,
+            "execution_time_ms": 7977.606773376465
+          },
+          "error": null
+        },
+        {
+          "name": "Turkish VIP Guest Query",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 4199.52392578125,
+          "details": "Generated valid Gremlin query: g.V().hasLabel('Reviewer').has('traveler_type', 'VIP').out('WROTE').has('text', containing('sorun'))...",
+          "response_data": {
+            "gremlin_query": "g.V().hasLabel('Reviewer').has('traveler_type', 'VIP').out('WROTE').has('text', containing('sorun')).valueMap().limit(10)",
+            "explanation": "Here's a breakdown of the Gremlin query:\n\n1.  **What this query is looking for:**\n\nThe query aims to find the reviews written by reviewers who are classified as \"VIP\" travelers and whose review text contains the word \"sorun\" (which is Turkish for \"problem\"). It then retrieves all the properties of those reviews. Finally, it limits the result to the first 10 reviews found.\n\n2.  **How it traverses the graph:**\n\n*   `g.V()`: Starts the traversal by considering all vertices in the graph.\n*   `hasLabel('Reviewer')`: Filters the vertices to only include those labeled as \"Reviewer\". This means we're now only looking at reviewer nodes.\n*   `has('traveler_type', 'VIP')`: Further filters the reviewers to only include those whose `traveler_type` property is set to \"VIP\".  We now have a set of VIP reviewers.\n*   `out('WROTE')`: Traverses the outgoing \"WROTE\" edges from the filtered reviewers. This moves the traversal to the review nodes written by these VIP reviewers.\n*   `has('text', containing('sorun'))`: Filters these reviews to only include those whose \"text\" property contains the word \"sorun\".\n*   `valueMap()`: Retrieves all properties (key-value pairs) of the remaining review nodes.\n*   `limit(10)`: Limits the results to the first 10 review property maps found.\n\n3.  **What results it will return:**\n\nThe query will return a list of up to 10 maps (dictionaries). Each map represents a review written by a VIP reviewer that contains the word \"sorun\". Each map will contain all the properties of that review (e.g., `id`, `score`, `title`, `text`, `created_at`, `stay_date`, etc.).",
+            "confidence_score": 0.9,
+            "execution_time_ms": 4195.4498291015625
+          },
+          "error": null
+        },
+        {
+          "name": "English Rating Query",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 3566.4501190185547,
+          "details": "Generated valid Gremlin query: g.V().hasLabel('Hotel').has('star_rating', gte(4.5)).limit(10)...",
+          "response_data": {
+            "gremlin_query": "g.V().hasLabel('Hotel').has('star_rating', gte(4.5)).limit(10)",
+            "explanation": "This Gremlin query aims to find highly-rated hotels. Here's a breakdown:\n\n1. **What it's looking for:** The query is designed to find up to 10 hotels that have a star rating of 4.5 or higher.\n\n2. **How it traverses the graph:**\n    * `g.V()`: It starts by considering all vertices (nodes) in the graph.\n    * `hasLabel('Hotel')`:  It filters these vertices, keeping only those that are labeled as 'Hotel'.  This focuses the search on hotel properties.\n    * `has('star_rating', gte(4.5))`: It further filters the hotels, selecting only those that have a 'star_rating' property value greater than or equal to 4.5. This ensures we only retrieve hotels with a high star rating.\n    * `limit(10)`: It limits the result set to the first 10 hotels that match the criteria.  This prevents the query from returning an overwhelming number of results if many hotels meet the criteria.\n\n3. **What results it will return:** The query will return a maximum of 10 vertices representing hotels that have a star rating of 4.5 or higher. Each vertex will contain all the properties defined for the 'Hotel' vertex type (name, address, city, etc.).",
+            "confidence_score": 0.9,
+            "execution_time_ms": 3563.654661178589
+          },
+          "error": null
+        },
+        {
+          "name": "Turkish Complex Query",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 7155.11155128479,
+          "details": "Generated valid Gremlin query: g.V().hasLabel('Review').has('created_at', P.gte(java.time.Instant.now().minus(java.time.Duration.of...",
+          "response_data": {
+            "gremlin_query": "g.V().hasLabel('Review').has('created_at', P.gte(java.time.Instant.now().minus(java.time.Duration.ofDays(30)))).in('HAS_ANALYSIS').has('sentiment_score', P.lt(0)).valueMap().limit(10)",
+            "explanation": "Okay, let's break down the Gremlin query step-by-step:\n\n1.  **What this query is looking for:**\n\n    This query aims to find recent reviews that have a negative sentiment score, according to the AI analysis performed on them. Specifically, it's looking for the properties (key-value pairs) of up to 10 of these reviews.\n\n2.  **How it traverses the graph:**\n\n    *   `g.V()`: Starts the graph traversal, considering all vertices (nodes).\n    *   `hasLabel('Review')`: Filters the vertices, selecting only those that are labeled as 'Review'.  We're now working only with review nodes.\n    *   `has('created_at', P.gte(java.time.Instant.now().minus(java.time.Duration.ofDays(30))))`: This is a filter based on time.  `created_at` is a property of the 'Review' vertex.\n        *   `java.time.Instant.now().minus(java.time.Duration.ofDays(30))` gets the current time and subtracts 30 days. This represents the date 30 days ago.\n        *   `P.gte()` means \"greater than or equal to.\"\n        *   Therefore, this step filters the reviews to only include those created in the last 30 days.\n    *   `in('HAS_ANALYSIS')`: Traverses *incoming* edges labeled 'HAS\\_ANALYSIS'. Since the query started with 'Review' vertices, this step moves to the 'Analysis' vertices that are linked to the reviews via a 'HAS\\_ANALYSIS' edge. In other words, it finds the AI analysis associated with each review.\n    *   `has('sentiment_score', P.lt(0))`: Filters the 'Analysis' vertices. It only keeps the analyses where the `sentiment_score` is less than 0.  A sentiment score less than 0 indicates a negative sentiment.\n    *   `valueMap()`:  For the remaining 'Review' vertices, this retrieves *all* the properties (key-value pairs) associated with each review.\n    *   `limit(10)`: Limits the number of returned results to a maximum of 10.  This prevents the query from returning a potentially very large number of reviews.\n\n3.  **What results it will return:**\n\n    The query will return the properties (key-value pairs) of up to 10 reviews that:\n\n    *   Are labeled as 'Review'.\n    *   Were created within the last 30 days.\n    *   Have an associated AI analysis ('Analysis' vertex) with a negative sentiment score.\n\nIn essence, the query finds the details (all properties) of up to 10 recent, negatively reviewed hotel experiences.",
+            "confidence_score": 0.9,
+            "execution_time_ms": 7152.501344680786
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "Gremlin Execution",
+      "total_tests": 5,
+      "passed": 0,
+      "failed": 5,
+      "warnings": 0,
+      "success_rate": 0.0,
+      "results": [
+        {
+          "name": "Hotel Count Query",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 4.579782485961914,
+          "details": "",
+          "response_data": {
+            "detail": "Internal server error"
+          },
+          "error": "HTTP 500: Internal server error"
+        },
+        {
+          "name": "Hotel Names Query",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 19.127845764160156,
+          "details": "",
+          "response_data": {
+            "error": "[WinError 64] Belirtilen ağ adı artık geçersiz"
+          },
+          "error": "HTTP 0: Unknown error"
+        },
+        {
+          "name": "Review Count Query",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 275.0861644744873,
+          "details": "",
+          "response_data": {
+            "detail": "Internal server error"
+          },
+          "error": "HTTP 500: Internal server error"
+        },
+        {
+          "name": "Edge Labels Query",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 8.218765258789062,
+          "details": "",
+          "response_data": {
+            "error": "[WinError 64] Belirtilen ağ adı artık geçersiz"
+          },
+          "error": "HTTP 0: Unknown error"
+        },
+        {
+          "name": "Hotel-Review Relationship",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 6.347179412841797,
+          "details": "",
+          "response_data": {
+            "detail": "Internal server error"
+          },
+          "error": "HTTP 500: Internal server error"
+        }
+      ]
+    },
+    {
+      "name": "Semantic RAG Endpoints",
+      "total_tests": 3,
+      "passed": 0,
+      "failed": 2,
+      "warnings": 1,
+      "success_rate": 0.0,
+      "results": [
+        {
+          "name": "Semantic Ask Endpoint",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 8.351564407348633,
+          "details": "",
+          "response_data": {
+            "error": "[WinError 64] Belirtilen ağ adı artık geçersiz"
+          },
+          "error": "HTTP 0: Unknown error"
+        },
+        {
+          "name": "Vector Search Endpoint",
+          "status": "TestStatus.WARN",
+          "execution_time_ms": 259.28378105163574,
+          "details": "No vector search results (may need indexed data)",
+          "response_data": {
+            "results": [],
+            "query_embedding": null,
+            "execution_time_ms": 0.8218288421630859,
+            "total_documents": 0
+          },
+          "error": null
+        },
+        {
+          "name": "Semantic Filter Endpoint",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 4.684209823608398,
+          "details": "",
+          "response_data": {
+            "detail": "Internal server error"
+          },
+          "error": "HTTP 500: Internal server error"
+        }
+      ]
+    },
+    {
+      "name": "Analytics Endpoints",
+      "total_tests": 3,
+      "passed": 0,
+      "failed": 0,
+      "warnings": 3,
+      "success_rate": 0.0,
+      "results": [
+        {
+          "name": "Hotel Average Ratings",
+          "status": "TestStatus.WARN",
+          "execution_time_ms": 2.627134323120117,
+          "details": "Endpoint not found (may not be implemented)",
+          "response_data": {
+            "detail": "Not Found"
+          },
+          "error": null
+        },
+        {
+          "name": "Group Statistics",
+          "status": "TestStatus.WARN",
+          "execution_time_ms": 1.2843608856201172,
+          "details": "Endpoint not found (may not be implemented)",
+          "response_data": {
+            "detail": "Not Found"
+          },
+          "error": null
+        },
+        {
+          "name": "Source Statistics",
+          "status": "TestStatus.WARN",
+          "execution_time_ms": 1.631021499633789,
+          "details": "Endpoint not found (may not be implemented)",
+          "response_data": {
+            "detail": "Not Found"
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "Error Handling",
+      "total_tests": 3,
+      "passed": 2,
+      "failed": 0,
+      "warnings": 1,
+      "success_rate": 66.66666666666666,
+      "results": [
+        {
+          "name": "Empty Query",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 2.3682117462158203,
+          "details": "Correctly returned HTTP 422 for invalid input",
+          "response_data": {
+            "detail": [
+              {
+                "type": "missing",
+                "loc": [
+                  "body",
+                  "prompt"
+                ],
+                "msg": "Field required",
+                "input": {
+                  "query": ""
+                }
+              }
+            ]
+          },
+          "error": null
+        },
+        {
+          "name": "Invalid Gremlin Query",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 2.732992172241211,
+          "details": "Correctly returned HTTP 500 for invalid input",
+          "response_data": {
+            "detail": "Internal server error"
+          },
+          "error": null
+        },
+        {
+          "name": "Missing Required Fields",
+          "status": "TestStatus.WARN",
+          "execution_time_ms": 4.818916320800781,
+          "details": "Expected [400, 422], got 0",
+          "response_data": {
+            "error": "[WinError 64] Belirtilen ağ adı artık geçersiz"
+          },
+          "error": null
+        }
+      ]
+    }
+  ],
+  "critical_failures": [
+    "Health & Status: System Health Check - System status: unhealthy",
+    "Gremlin Execution: Hotel Count Query - HTTP 500: Internal server error",
+    "Gremlin Execution: Hotel Names Query - HTTP 0: Unknown error",
+    "Gremlin Execution: Review Count Query - HTTP 500: Internal server error",
+    "Gremlin Execution: Edge Labels Query - HTTP 0: Unknown error",
+    "Gremlin Execution: Hotel-Review Relationship - HTTP 500: Internal server error",
+    "Semantic RAG Endpoints: Semantic Ask Endpoint - HTTP 0: Unknown error",
+    "Semantic RAG Endpoints: Semantic Filter Endpoint - HTTP 500: Internal server error"
+  ]
+}

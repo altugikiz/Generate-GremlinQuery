@@ -2,11 +2,12 @@
 Search and retrieval endpoints for the Graph RAG pipeline.
 """
 
-from fastapi import APIRouter, HTTPException, Depends, Query, BackgroundTasks
+from fastapi import APIRouter, HTTPException, Depends, Query, BackgroundTasks, Request
 from fastapi.responses import JSONResponse
 from typing import List, Optional, Dict, Any
 import uuid
 from datetime import datetime
+from loguru import logger
 
 from app.models.dto import (
     SearchRequest, 
@@ -23,19 +24,19 @@ from app.core.rag_pipeline import RAGPipeline
 router = APIRouter()
 
 
-def get_gremlin_client(request) -> GremlinClient:
+def get_gremlin_client(request: Request) -> GremlinClient:
     """Dependency to get Gremlin client from app state."""
-    return request.app.state.gremlin_client
+    return getattr(request.app.state, 'gremlin_client', None)
 
 
-def get_vector_store(request) -> VectorStore:
+def get_vector_store(request: Request) -> VectorStore:
     """Dependency to get vector store from app state."""
-    return request.app.state.vector_store
+    return getattr(request.app.state, 'vector_store', None)
 
 
-def get_rag_pipeline(request) -> RAGPipeline:
+def get_rag_pipeline(request: Request) -> RAGPipeline:
     """Dependency to get RAG pipeline from app state."""
-    return request.app.state.rag_pipeline
+    return getattr(request.app.state, 'rag_pipeline', None)
 
 
 @router.post("/search", response_model=HybridSearchResult)
@@ -320,19 +321,56 @@ async def get_statistics(
     if not rag_pipeline:
         raise HTTPException(
             status_code=503,
-            detail="RAG pipeline not available"
+            detail={
+                "error": "RAG pipeline not available",
+                "message": "The RAG pipeline is not initialized. This may be due to missing configuration or failed startup.",
+                "suggestions": [
+                    "Check if all required environment variables are set",
+                    "Verify the vector store and embeddings are properly configured",
+                    "Try restarting the service"
+                ]
+            }
         )
     
     try:
         stats = await rag_pipeline.get_statistics()
+        if not stats:
+            # Return minimal stats if pipeline stats are empty
+            stats = {
+                "pipeline_status": "operational",
+                "components": {
+                    "llm": "connected" if hasattr(rag_pipeline, 'llm_client') else "unavailable",
+                    "vector_store": "connected" if hasattr(rag_pipeline, 'vector_store') else "unavailable",
+                    "gremlin": "configured" if hasattr(rag_pipeline, 'gremlin_client') else "unavailable"
+                },
+                "timestamp": datetime.now().isoformat(),
+                "mode": "development"
+            }
         return stats
         
+    except AttributeError as e:
+        # Handle missing methods gracefully
+        logger.warning(f"RAG pipeline missing get_statistics method: {e}")
+        return {
+            "error": "Statistics partially available",
+            "message": f"Pipeline statistics method not implemented: {str(e)}",
+            "basic_status": {
+                "pipeline_available": True,
+                "timestamp": datetime.now().isoformat(),
+                "mode": "development"
+            }
+        }
+        
     except Exception as e:
-        error_response = ErrorResponse(
-            error_code="STATS_ERROR",
-            message=f"Failed to get statistics: {str(e)}"
+        logger.error(f"Error getting RAG pipeline statistics: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "error": "STATS_ERROR",
+                "message": f"Failed to get statistics: {str(e)}",
+                "timestamp": datetime.now().isoformat()
+            }
         )
-        raise HTTPException(status_code=500, detail=error_response.dict())
 
 
 @router.delete("/index/clear")

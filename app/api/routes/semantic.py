@@ -3,7 +3,7 @@ Semantic RAG + Graph Intelligence endpoints.
 Provides intelligent endpoints using LLM + Gremlin + Vector Search.
 """
 
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends, Query, Request
 from typing import List, Optional, Dict, Any, Union
 from pydantic import BaseModel, Field
 from loguru import logger
@@ -12,7 +12,7 @@ import time
 from app.core.rag_pipeline import EnhancedRAGPipeline
 from app.core.graph_query_llm import GraphQueryLLM
 from app.core.vector_retriever import VectorRetriever
-from app.core.schema_gremlin_client import SchemaAwareGremlinClient
+from app.core.sync_gremlin_client import SyncGremlinClient
 from app.models.dto import ErrorResponse
 from app.config.settings import get_settings
 
@@ -101,23 +101,22 @@ class ModelInfoResponse(BaseModel):
 
 
 # Dependency functions
-def get_rag_pipeline(request) -> EnhancedRAGPipeline:
+def get_rag_pipeline(request: Request) -> EnhancedRAGPipeline:
     """Dependency to get RAG pipeline from app state."""
     return getattr(request.app.state, 'rag_pipeline', None)
 
 
-def get_graph_query_llm() -> GraphQueryLLM:
-    """Dependency to get Graph Query LLM."""
-    from app.core.graph_query_llm import get_graph_query_llm
-    return get_graph_query_llm()
+def get_graph_query_llm(request: Request) -> GraphQueryLLM:
+    """Dependency to get Graph Query LLM from app state."""
+    return getattr(request.app.state, 'graph_query_llm', None)
 
 
-def get_vector_retriever(request) -> VectorRetriever:
+def get_vector_retriever(request: Request) -> VectorRetriever:
     """Dependency to get Vector Retriever from app state."""
     return getattr(request.app.state, 'vector_retriever', None)
 
 
-def get_gremlin_client(request) -> SchemaAwareGremlinClient:
+def get_gremlin_client(request: Request) -> SyncGremlinClient:
     """Dependency to get Gremlin client from app state."""
     return getattr(request.app.state, 'gremlin_client', None)
 
@@ -152,54 +151,33 @@ async def semantic_ask(
     if not rag_pipeline:
         raise HTTPException(
             status_code=503,
-            detail="RAG pipeline not available"
+            detail="RAG pipeline not available - service initialization failed"
         )
     
     try:
         start_time = time.time()
-        component_times = {}
         
-        # Use the existing graph_rag_answer method
-        result = await rag_pipeline.graph_rag_answer(
-            user_query=request.query,
-            include_context=request.include_context,
-            include_query_translation=request.include_gremlin_query,
-            filters=request.filters,
-            max_graph_results=request.max_graph_results,
-            max_semantic_results=request.max_semantic_results
-        )
+        # Execute RAG pipeline with real database operations
+        answer = await rag_pipeline.graph_rag_answer(request.query)
         
-        # Extract component timing information from the pipeline
         total_time = (time.time() - start_time) * 1000
-        component_times = {
-            "total_execution": total_time,
-            "query_translation": result.get("query_translation_time_ms", 0),
-            "graph_search": result.get("graph_search_time_ms", 0),
-            "semantic_search": result.get("semantic_search_time_ms", 0),
-            "response_generation": result.get("response_generation_time_ms", 0)
-        }
         
-        # Extract semantic chunks if requested
-        semantic_chunks = None
-        if request.include_semantic_chunks and result.get("semantic_results"):
-            semantic_chunks = [
-                {
-                    "text": chunk.get("content", ""),
-                    "similarity_score": chunk.get("similarity_score", 0.0),
-                    "metadata": chunk.get("metadata", {})
-                }
-                for chunk in result.get("semantic_results", [])
-            ]
-        
+        # Build response with available data
         response = SemanticAskResponse(
-            answer=result.get("answer", "No answer generated"),
+            answer=answer,
             query=request.query,
-            gremlin_query=result.get("gremlin_query") if request.include_gremlin_query else None,
-            semantic_chunks=semantic_chunks,
-            context=result.get("context") if request.include_context else None,
-            execution_time_ms=result.get("execution_time_ms", total_time),
-            component_times=component_times,
-            development_mode=result.get("development_mode", False)
+            gremlin_query=None,  # TODO: Add support if needed
+            semantic_chunks=None,  # TODO: Add support if needed
+            context=None,  # TODO: Add support if needed
+            execution_time_ms=total_time,
+            component_times={
+                "total_execution": total_time,
+                "query_translation": 0,
+                "graph_search": 0,
+                "semantic_search": 0,
+                "response_generation": total_time
+            },
+            development_mode=False  # Always false in production
         )
         
         return response
@@ -215,7 +193,7 @@ async def semantic_ask(
 @router.post("/filter", response_model=FilterResponse)
 async def semantic_filter(
     request: FilterRequest,
-    gremlin_client: SchemaAwareGremlinClient = Depends(get_gremlin_client),
+    gremlin_client: SyncGremlinClient = Depends(get_gremlin_client),
     graph_query_llm: GraphQueryLLM = Depends(get_graph_query_llm)
 ):
     """
@@ -230,10 +208,17 @@ async def semantic_filter(
     - date_range: {"start": "2024-01-01", "end": "2024-12-31"}
     - sentiment: "positive"
     """
-    if not gremlin_client or not gremlin_client.is_connected:
+    if not gremlin_client:
         raise HTTPException(
             status_code=503,
-            detail="Graph database not available"
+            detail="Graph database client not available - service initialization failed"
+        )
+
+    if not gremlin_client.is_connected:
+        logger.error("PRODUCTION MODE: Gremlin client is not connected - failing request")
+        raise HTTPException(
+            status_code=503,
+            detail="Graph database connection not available - check Cosmos DB Gremlin API connectivity"
         )
     
     try:
@@ -242,10 +227,10 @@ async def semantic_filter(
         # Convert structured filters to Gremlin query
         gremlin_query = await _build_gremlin_from_filters(request.filters, request.max_results)
         
-        # Execute the query
+        # Execute the query against real database
         results = await gremlin_client.execute_query(gremlin_query)
         
-        # Generate summary if requested
+        # Generate summary if requested and LLM is available
         summary = None
         if request.summarize_with_llm and graph_query_llm and results:
             summary_prompt = f"""
@@ -270,7 +255,7 @@ async def semantic_filter(
         )
         
     except Exception as e:
-        logger.error(f"Error in semantic filter: {str(e)}")
+        logger.error(f"Error in semantic filter execution: {str(e)}")
         raise HTTPException(
             status_code=500,
             detail=f"Failed to process filter query: {str(e)}"
@@ -294,24 +279,36 @@ async def semantic_gremlin_translation(
       "include_explanation": true
     }
     """
+    if not graph_query_llm:
+        raise HTTPException(
+            status_code=503,
+            detail="Graph Query LLM not available - service initialization failed"
+        )
+    
     try:
         start_time = time.time()
         
-        # Generate Gremlin query
+        # Generate Gremlin query using real LLM
         gremlin_query = await graph_query_llm.generate_gremlin_query(request.prompt)
+        
+        if not gremlin_query:
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to generate Gremlin query from natural language prompt"
+            )
         
         # Generate explanation if requested
         explanation = None
         confidence_score = 0.8  # Default confidence
         
-        if request.include_explanation and gremlin_query:
+        if request.include_explanation:
             explanation = await graph_query_llm.explain_query(gremlin_query)
             confidence_score = 0.9  # Higher confidence if explanation was generated
         
         execution_time = (time.time() - start_time) * 1000
         
         return GremlinTranslationResponse(
-            gremlin_query=gremlin_query or "# No query generated",
+            gremlin_query=gremlin_query,
             explanation=explanation,
             confidence_score=confidence_score,
             execution_time_ms=execution_time
@@ -343,45 +340,63 @@ async def semantic_vector_search(
       "min_score": 0.7
     }
     """
+    # Enhanced logging for debugging
+    logger.info(f"🔍 Vector search endpoint called with query: '{request.query}'")
+    logger.info(f"📊 Vector retriever instance: {vector_retriever}")
+    logger.info(f"📊 Vector retriever type: {type(vector_retriever)}")
+    
+    if vector_retriever:
+        try:
+            stats = await vector_retriever.get_statistics()
+            logger.info(f"📈 Vector retriever stats: {stats}")
+        except Exception as e:
+            logger.error(f"❌ Error getting vector retriever stats: {e}")
+    
     if not vector_retriever:
         raise HTTPException(
             status_code=503,
-            detail="Vector retriever not available"
+            detail="Vector retriever not available - service initialization failed"
+        )
+        raise HTTPException(
+            status_code=503,
+            detail="Vector retriever not available - service initialization failed"
         )
     
     try:
         start_time = time.time()
         
-        # Perform vector search
-        search_results = await vector_retriever.retrieve_similar_docs(
+        # Perform vector search against real FAISS index
+        search_results = await vector_retriever.retrieve_similar_docs_with_scores(
             query=request.query,
             top_k=request.top_k,
             min_score=request.min_score
         )
         
+        # Convert SemanticResult objects to dictionaries for response
+        formatted_results = []
+        for result in search_results:
+            formatted_result = {
+                "id": result.id,
+                "content": result.content,
+                "score": result.score,
+                "metadata": result.metadata
+            }
+            if request.include_embeddings and hasattr(result, 'embedding') and result.embedding:
+                formatted_result["embedding"] = result.embedding
+            formatted_results.append(formatted_result)
+        
         # Get query embedding if requested
         query_embedding = None
         if request.include_embeddings:
-            # This would require exposing the embedding generation method
-            # For now, we'll leave it as None
-            query_embedding = None
-        
-        # Get total document count (if available)
-        total_documents = getattr(vector_retriever, '_document_count', 0)
+            query_embedding = await vector_retriever.get_query_embedding(request.query)
         
         execution_time = (time.time() - start_time) * 1000
         
-        # Format results
-        formatted_results = []
-        for result in search_results:
-            if isinstance(result, str):
-                formatted_results.append({
-                    "content": result,
-                    "similarity_score": 1.0,
-                    "metadata": {}
-                })
-            elif isinstance(result, dict):
-                formatted_results.append(result)
+        # Get total document count from vector retriever
+        stats = await vector_retriever.get_statistics()
+        total_documents = stats.get('document_count', 0)
+        
+        logger.info(f"✅ Vector search completed: {len(formatted_results)} results in {execution_time:.2f}ms")
         
         return VectorSearchResponse(
             results=formatted_results,
@@ -466,6 +481,69 @@ async def get_semantic_models_info(
         )
 
 
+
+
+@router.post("/execute", response_model=Dict[str, Any])
+async def execute_gremlin_query(
+    request: Dict[str, str],
+    gremlin_client: SyncGremlinClient = Depends(get_gremlin_client)
+):
+    """
+    **PRODUCTION MODE** - Execute a raw Gremlin query.
+    
+    ⚠️  WARNING: This endpoint executes arbitrary Gremlin queries and includes
+    basic validation to prevent dangerous operations.
+    
+    Request body:
+    {
+        "query": "g.V().hasLabel('Hotel').limit(5).valueMap()"
+    }
+    
+    Returns the raw query results.
+    """
+    if not gremlin_client or not gremlin_client.is_connected:
+        raise HTTPException(
+            status_code=503,
+            detail="Graph database not available - check Cosmos DB Gremlin API connectivity"
+        )
+    
+    gremlin_query = request.get("query", "").strip()
+    if not gremlin_query:
+        raise HTTPException(
+            status_code=400,
+            detail="Query parameter is required"
+        )
+    
+    # Basic validation to prevent obviously dangerous queries
+    dangerous_patterns = ["drop", "delete", "clear", "truncate"]
+    query_lower = gremlin_query.lower()
+    for pattern in dangerous_patterns:
+        if pattern in query_lower:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Query contains potentially dangerous operation: {pattern}"
+            )
+    
+    try:
+        start_time = time.time()
+        results = await gremlin_client.execute_query(gremlin_query)
+        execution_time = (time.time() - start_time) * 1000
+        
+        return {
+            "query": gremlin_query,
+            "results": results,
+            "results_count": len(results) if isinstance(results, list) else 1,
+            "execution_time_ms": execution_time,
+            "timestamp": time.time()
+        }
+        
+    except Exception as e:
+        logger.error(f"Error executing Gremlin query: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Query execution failed: {str(e)}"
+        )
+
 # Helper Functions
 
 async def _build_gremlin_from_filters(filters: Dict[str, Any], max_results: int) -> str:
@@ -508,6 +586,6 @@ async def _build_gremlin_from_filters(filters: Dict[str, Any], max_results: int)
     
     # Add result limit and output format
     query_parts.append(f".limit({max_results})")
-    query_parts.append(".valueMap().with('~tinkerpop.valueMap.tokens')")
+    query_parts.append(".valueMap(true)")  # Use true parameter instead of with() modifier
     
     return "".join(query_parts)

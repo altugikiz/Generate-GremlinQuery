@@ -1,0 +1,81 @@
+{
+  "summary": {
+    "total_tests": 10,
+    "passed": 9,
+    "failed": 1,
+    "success_rate": 90.0
+  },
+  "test_results": [
+    {
+      "test_name": "Group Statistics Endpoint",
+      "passed": true,
+      "details": "All compatibility checks passed",
+      "query": "\n        g.V().hasLabel('HotelGroup')\n         .limit(50)\n         .valueMap(true)\n        ",
+      "timestamp": "2025-07-06T21:30:05.821327"
+    },
+    {
+      "test_name": "Hotel Statistics Endpoint",
+      "passed": true,
+      "details": "All compatibility checks passed",
+      "query": "\n        g.V().hasLabel('Hotel')\n         .range(0, 10)\n         .valueMap(true)\n        ",
+      "timestamp": "2025-07-06T21:30:05.823933"
+    },
+    {
+      "test_name": "Hotel Averages Endpoint",
+      "passed": true,
+      "details": "All compatibility checks passed",
+      "query": "\n        g.V().hasLabel('Hotel').has('name', 'Test Hotel')\n         .limit(1)\n         .valueMap(true)\n        ",
+      "timestamp": "2025-07-06T21:30:05.825619"
+    },
+    {
+      "test_name": "Language Distribution Endpoint",
+      "passed": true,
+      "details": "All compatibility checks passed",
+      "query": "\n        g.V().hasLabel('Hotel').has('id', 'hotel1')\n         .limit(1)\n         .valueMap(true)\n        ",
+      "timestamp": "2025-07-06T21:30:05.827444"
+    },
+    {
+      "test_name": "Source Distribution Endpoint",
+      "passed": true,
+      "details": "All compatibility checks passed",
+      "query": "\n        g.V().hasLabel('Hotel').has('name', 'Test Hotel')\n         .limit(1)\n         .valueMap(true)\n        ",
+      "timestamp": "2025-07-06T21:30:05.828710"
+    },
+    {
+      "test_name": "Accommodation Metrics Endpoint",
+      "passed": true,
+      "details": "All compatibility checks passed",
+      "query": "\n        g.V().hasLabel('Hotel').has('name', 'Test Hotel')\n         .limit(1)\n         .valueMap(true)\n         .project('hotel_id', 'accommodation_count')\n         .by(__.values('id'))\n         .by(__.out('OFFERS').count())\n        ",
+      "timestamp": "2025-07-06T21:30:05.830485"
+    },
+    {
+      "test_name": "Aspect Breakdown Endpoint",
+      "passed": true,
+      "details": "All compatibility checks passed",
+      "query": "\n        g.V().hasLabel('Hotel').has('name', 'Test Hotel')\n         .limit(1)\n         .in('BELONGS_TO').in('HAS_REVIEW').in('HAS_ANALYSIS')\n         .out('ANALYZES_ASPECT')\n         .groupCount().by(__.values('name'))\n         .limit(50)\n        ",
+      "timestamp": "2025-07-06T21:30:05.832311"
+    },
+    {
+      "test_name": "Query Reviews Endpoint",
+      "passed": true,
+      "details": "All queries have proper limits",
+      "query": "",
+      "timestamp": "2025-07-06T21:30:05.834507"
+    },
+    {
+      "test_name": "Error Logging Function",
+      "passed": true,
+      "details": "Error logging working correctly",
+      "query": "",
+      "timestamp": "2025-07-06T21:30:05.834990"
+    },
+    {
+      "test_name": "Safe Property Access Function",
+      "passed": false,
+      "details": "Some safe property access tests failed",
+      "query": "",
+      "timestamp": "2025-07-06T21:30:05.835154"
+    }
+  ],
+  "generated_at": "2025-07-06T21:30:05.837934"
+}

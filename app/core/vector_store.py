@@ -209,6 +209,11 @@ class VectorStore:
             logger.warning("No documents in index")
             return []
         
+        # Add enhanced logging for debugging
+        logger.info(f"🔍 Vector search query: '{query}'")
+        logger.info(f"📊 Index contains {self.index.ntotal} documents")
+        logger.info(f"🎯 Searching for top_k={top_k}, min_score={min_score}")
+        
         start_time = time.time()
         
         try:
@@ -221,13 +226,23 @@ class VectorStore:
             # Search in FAISS index
             scores, indices = self.index.search(query_embedding, min(top_k * 2, self.index.ntotal))
             
+            logger.info(f"📈 Raw FAISS search returned {len(scores[0])} candidates")
+            logger.debug(f"🔢 Raw scores: {scores[0][:10]}")  # Log first 10 scores
+            logger.debug(f"🔢 Raw indices: {indices[0][:10]}")  # Log first 10 indices
+            
             results = []
-            for score, idx in zip(scores[0], indices[0]):
+            for i, (score, idx) in enumerate(zip(scores[0], indices[0])):
                 if idx == -1:  # Invalid index
+                    logger.debug(f"⚠️  Skipping invalid index at position {i}")
                     continue
                 
                 if score < min_score:
+                    logger.debug(f"⚠️  Score {score:.4f} below threshold {min_score} at position {i}")
                     continue
+                
+                # Normalize score to prevent Pydantic validation errors
+                # FAISS inner product scores can exceed 1.0, but our model expects scores <= 1.0
+                normalized_score = min(float(score), 1.0)
                 
                 # Get document and metadata
                 doc = self.documents[idx]
@@ -235,15 +250,18 @@ class VectorStore:
                 
                 # Apply filters if specified
                 if filters and not self._matches_filters(meta, filters):
+                    logger.debug(f"⚠️  Document {idx} filtered out by metadata filters")
                     continue
                 
                 result = SemanticResult(
                     id=str(meta.get('doc_id', idx)),
                     content=doc,
-                    score=float(score),
+                    score=normalized_score,
                     metadata=meta
                 )
                 results.append(result)
+                
+                logger.debug(f"✅ Added result {len(results)}: raw_score={score:.4f}, normalized_score={normalized_score:.4f}, doc_id={meta.get('doc_id', idx)}")
                 
                 if len(results) >= top_k:
                     break
@@ -252,7 +270,13 @@ class VectorStore:
             self._search_count += 1
             self._total_search_time += execution_time
             
-            logger.debug(f"Search completed in {execution_time:.2f}ms, found {len(results)} results")
+            logger.info(f"🎉 Search completed in {execution_time:.2f}ms, found {len(results)} results")
+            if results:
+                logger.info(f"📋 Top result score: {results[0].score:.4f}")
+                logger.info(f"📋 Lowest result score: {results[-1].score:.4f}")
+            else:
+                logger.warning("⚠️  No results found - check query relevance or lower min_score")
+            
             return results
             
         except Exception as e:

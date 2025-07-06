@@ -1,0 +1,723 @@
+{
+  "timestamp": "2025-07-06 21:38:58",
+  "test_results": {
+    "index_status": {
+      "vector_store": {
+        "is_initialized": true,
+        "document_count": 15,
+        "index_size": 15,
+        "embedding_dimension": 384,
+        "search_count": 0,
+        "total_search_time_ms": 0.0,
+        "average_search_time_ms": 0.0,
+        "index_count": 15,
+        "model_name": "all-MiniLM-L6-v2"
+      },
+      "vector_retriever": {
+        "is_initialized": true,
+        "document_count": 15,
+        "index_size": 15,
+        "embedding_dimension": 384,
+        "search_count": 0,
+        "total_search_time_ms": 0.0,
+        "average_search_time_ms": 0.0,
+        "index_count": 15,
+        "model_name": "all-MiniLM-L6-v2"
+      },
+      "has_documents": true
+    },
+    "sample_data_loaded": true,
+    "query_tests": {
+      "otel temizliği hakkında yorum": {
+        "vector_store": {
+          "results_count": 5,
+          "execution_time_ms": 74.8589038848877,
+          "results": [
+            {
+              "score": 0.5851327180862427,
+              "content_preview": "Otelin konumu çok güzel, denize yakın ve merkeze yürüme mesafesinde.",
+              "metadata": {
+                "hotel_id": "hotel_002",
+                "language": "tr",
+                "aspect": "konum",
+                "rating": 8.5,
+                "doc_id": 2,
+                "added_at": 1751827137.103927
+              }
+            },
+            {
+              "score": 0.6328557729721069,
+              "content_preview": "Otelin havuzu temiz ve büyük, çocuklar için ayrı alan var.",
+              "metadata": {
+                "hotel_id": "hotel_001",
+                "language": "tr",
+                "aspect": "havuz",
+                "rating": 8.4,
+                "doc_id": 8,
+                "added_at": 1751827137.103942
+              }
+            },
+            {
+              "score": 0.6575139164924622,
+              "content_preview": "Personel çok güler yüzlü ve misafirlere karşı son derece saygılı.",
+              "metadata": {
+                "hotel_id": "hotel_002",
+                "language": "tr",
+                "aspect": "personel",
+                "rating": 9.2,
+                "doc_id": 4,
+                "added_at": 1751827137.1039305
+              }
+            },
+            {
+              "score": 0.7017964124679565,
+              "content_preview": "Bu otel gerçekten harika! Temizlik konusunda çok titizler ve personel son derece yardımsever.",
+              "metadata": {
+                "hotel_id": "hotel_001",
+                "language": "tr",
+                "aspect": "temizlik",
+                "rating": 9.0,
+                "doc_id": 0,
+                "added_at": 1751827137.103914
+              }
+            },
+            {
+              "score": 0.7080621123313904,
+              "content_preview": "Kahvaltı çeşitleri bol ve lezzetli, özellikle Türk kahvaltısı harika.",
+              "metadata": {
+                "hotel_id": "hotel_001",
+                "language": "tr",
+                "aspect": "kahvaltı",
+                "rating": 8.8,
+                "doc_id": 3,
+                "added_at": 1751827137.1039286
+              }
+            }
+          ]
+        },
+        "vector_retriever": {
+          "results_count": 5,
+          "execution_time_ms": 21.854162216186523,
+          "results": [
+            {
+              "score": 0.6308619976043701,
+              "content_preview": "Otelin konumu çok güzel, denize yakın ve merkeze yürüme mesafesinde.",
+              "metadata": {
+                "hotel_id": "hotel_002",
+                "language": "tr",
+                "aspect": "konum",
+                "rating": 8.5,
+                "doc_id": 2,
+                "added_at": 1751827137.2893488
+              }
+            },
+            {
+              "score": 0.6124239563941956,
+              "content_preview": "Otelin havuzu temiz ve büyük, çocuklar için ayrı alan var.",
+              "metadata": {
+                "hotel_id": "hotel_001",
+                "language": "tr",
+                "aspect": "havuz",
+                "rating": 8.4,
+                "doc_id": 8,
+                "added_at": 1751827137.289369
+              }
+            },
+            {
+              "score": 0.6033132076263428,
+              "content_preview": "Personel çok güler yüzlü ve misafirlere karşı son derece saygılı.",
+              "metadata": {
+                "hotel_id": "hotel_002",
+                "language": "tr",
+                "aspect": "personel",
+                "rating": 9.2,
+                "doc_id": 4,
+                "added_at": 1751827137.2893567
+              }
+            },
+            {
+              "score": 0.5876143574714661,
+              "content_preview": "Bu otel gerçekten harika! Temizlik konusunda çok titizler ve personel son derece yardımsever.",
+              "metadata": {
+                "hotel_id": "hotel_001",
+                "language": "tr",
+                "aspect": "temizlik",
+                "rating": 9.0,
+                "doc_id": 0,
+                "added_at": 1751827137.2893293
+              }
+            },
+            {
+              "score": 0.5854587554931641,
+              "content_preview": "Kahvaltı çeşitleri bol ve lezzetli, özellikle Türk kahvaltısı harika.",
+              "metadata": {
+                "hotel_id": "hotel_001",
+                "language": "tr",
+                "aspect": "kahvaltı",
+                "rating": 8.8,
+                "doc_id": 3,
+                "added_at": 1751827137.2893527
+              }
+            }
+          ]
+        }
+      },
+      "temizlik": {
+        "error": "1 validation error for SemanticResult\nscore\n  Input should be less than or equal to 1 [type=less_than_equal, input_value=1.1131205558776855, input_type=float]\n    For further information visit https://errors.pydantic.dev/2.10/v/less_than_equal"
+      },
+      "personel hizmet kalitesi": {
+        "vector_store": {
+          "results_count": 3,
+          "execution_time_ms": 18.997669219970703,
+          "results": [
+            {
+              "score": 0.7917770147323608,
+              "content_preview": "Yemek kalitesi çok iyi, özellikle akşam yemekleri lezzetli.",
+              "metadata": {
+                "hotel_id": "hotel_002",
+                "language": "tr",
+                "aspect": "yemek",
+                "rating": 8.6,
+                "doc_id": 7,
+                "added_at": 1751827137.1039402
+              }
+            },
+            {
+              "score": 0.9068690538406372,
+              "content_preview": "SPA hizmetleri kaliteli, masaj çok rahatlatıcı.",
+              "metadata": {
+                "hotel_id": "hotel_003",
+                "language": "tr",
+                "aspect": "spa",
+                "rating": 8.9,
+                "doc_id": 6,
+                "added_at": 1751827137.1039388
+              }
+            },
+            {
+              "score": 0.9383882880210876,
+              "content_preview": "Otelin bahçesi çok güzel düzenlenmiş, yeşillik bol.",
+              "metadata": {
+                "hotel_id": "hotel_002",
+                "language": "tr",
+                "aspect": "bahçe",
+                "rating": 8.7,
+                "doc_id": 14,
+                "added_at": 1751827137.161662
+              }
+            }
+          ]
+        },
+        "vector_retriever": {
+          "results_count": 3,
+          "execution_time_ms": 20.633697509765625,
+          "results": [
+            {
+              "score": 0.5581051707267761,
+              "content_preview": "Yemek kalitesi çok iyi, özellikle akşam yemekleri lezzetli.",
+              "metadata": {
+                "hotel_id": "hotel_002",
+                "language": "tr",
+                "aspect": "yemek",
+                "rating": 8.6,
+                "doc_id": 7,
+                "added_at": 1751827137.289366
+              }
+            },
+            {
+              "score": 0.5244198441505432,
+              "content_preview": "SPA hizmetleri kaliteli, masaj çok rahatlatıcı.",
+              "metadata": {
+                "hotel_id": "hotel_003",
+                "language": "tr",
+                "aspect": "spa",
+                "rating": 8.9,
+                "doc_id": 6,
+                "added_at": 1751827137.2893631
+              }
+            },
+            {
+              "score": 0.5158925652503967,
+              "content_preview": "Otelin bahçesi çok güzel düzenlenmiş, yeşillik bol.",
+              "metadata": {
+                "hotel_id": "hotel_002",
+                "language": "tr",
+                "aspect": "bahçe",
+                "rating": 8.7,
+                "doc_id": 14,
+                "added_at": 1751827137.3378112
+              }
+            }
+          ]
+        }
+      },
+      "kahvaltı çeşitleri": {
+        "vector_store": {
+          "results_count": 3,
+          "execution_time_ms": 28.191089630126953,
+          "results": [
+            {
+              "score": 0.375809907913208,
+              "content_preview": "Kahvaltı çeşitleri bol ve lezzetli, özellikle Türk kahvaltısı harika.",
+              "metadata": {
+                "hotel_id": "hotel_001",
+                "language": "tr",
+                "aspect": "kahvaltı",
+                "rating": 8.8,
+                "doc_id": 3,
+                "added_at": 1751827137.1039286
+              }
+            },
+            {
+              "score": 0.5335193276405334,
+              "content_preview": "Klima sistemi çok iyi çalışıyor, odalar serin.",
+              "metadata": {
+                "hotel_id": "hotel_003",
+                "language": "tr",
+                "aspect": "klima",
+                "rating": 9.1,
+                "doc_id": 9,
+                "added_at": 1751827137.1039436
+              }
+            },
+            {
+              "score": 0.6645569801330566,
+              "content_preview": "Personel çok güler yüzlü ve misafirlere karşı son derece saygılı.",
+              "metadata": {
+                "hotel_id": "hotel_002",
+                "language": "tr",
+                "aspect": "personel",
+                "rating": 9.2,
+                "doc_id": 4,
+                "added_at": 1751827137.1039305
+              }
+            }
+          ]
+        },
+        "vector_retriever": {
+          "results_count": 3,
+          "execution_time_ms": 35.06898880004883,
+          "results": [
+            {
+              "score": 0.7268446087837219,
+              "content_preview": "Kahvaltı çeşitleri bol ve lezzetli, özellikle Türk kahvaltısı harika.",
+              "metadata": {
+                "hotel_id": "hotel_001",
+                "language": "tr",
+                "aspect": "kahvaltı",
+                "rating": 8.8,
+                "doc_id": 3,
+                "added_at": 1751827137.2893527
+              }
+            },
+            {
+              "score": 0.652094841003418,
+              "content_preview": "Klima sistemi çok iyi çalışıyor, odalar serin.",
+              "metadata": {
+                "hotel_id": "hotel_003",
+                "language": "tr",
+                "aspect": "klima",
+                "rating": 9.1,
+                "doc_id": 9,
+                "added_at": 1751827137.2893727
+              }
+            },
+            {
+              "score": 0.6007604598999023,
+              "content_preview": "Personel çok güler yüzlü ve misafirlere karşı son derece saygılı.",
+              "metadata": {
+                "hotel_id": "hotel_002",
+                "language": "tr",
+                "aspect": "personel",
+                "rating": 9.2,
+                "doc_id": 4,
+                "added_at": 1751827137.2893567
+              }
+            }
+          ]
+        }
+      },
+      "oda temizliği": {
+        "vector_store": {
+          "results_count": 3,
+          "execution_time_ms": 32.624244689941406,
+          "results": [
+            {
+              "score": 0.6874005198478699,
+              "content_preview": "Otel temizliği mükemmel, odalar her gün titizlikle temizleniyor.",
+              "metadata": {
+                "hotel_id": "hotel_001",
+                "language": "tr",
+                "aspect": "temizlik",
+                "rating": 9.5,
+                "doc_id": 1,
+                "added_at": 1751827137.1039238
+              }
+            },
+            {
+              "score": 0.702064573764801,
+              "content_preview": "Odalar ferah ve temiz, manzara muhteşem.",
+              "metadata": {
+                "hotel_id": "hotel_001",
+                "language": "tr",
+                "aspect": "oda",
+                "rating": 8.7,
+                "doc_id": 5,
+                "added_at": 1751827137.1039321
+              }
+            },
+            {
+              "score": 0.8693114519119263,
+              "content_preview": "Banyo temizliği mükemmel, havlular her gün değişiyor.",
+              "metadata": {
+                "hotel_id": "hotel_001",
+                "language": "tr",
+                "aspect": "temizlik",
+                "rating": 9.3,
+                "doc_id": 10,
+                "added_at": 1751827137.1616518
+              }
+            }
+          ]
+        },
+        "vector_retriever": {
+          "results_count": 3,
+          "execution_time_ms": 27.879714965820312,
+          "results": [
+            {
+              "score": 0.5926275253295898,
+              "content_preview": "Otel temizliği mükemmel, odalar her gün titizlikle temizleniyor.",
+              "metadata": {
+                "hotel_id": "hotel_001",
+                "language": "tr",
+                "aspect": "temizlik",
+                "rating": 9.5,
+                "doc_id": 1,
+                "added_at": 1751827137.2893438
+              }
+            },
+            {
+              "score": 0.5875217914581299,
+              "content_preview": "Odalar ferah ve temiz, manzara muhteşem.",
+              "metadata": {
+                "hotel_id": "hotel_001",
+                "language": "tr",
+                "aspect": "oda",
+                "rating": 8.7,
+                "doc_id": 5,
+                "added_at": 1751827137.28936
+              }
+            },
+            {
+              "score": 0.5349563360214233,
+              "content_preview": "Banyo temizliği mükemmel, havlular her gün değişiyor.",
+              "metadata": {
+                "hotel_id": "hotel_001",
+                "language": "tr",
+                "aspect": "temizlik",
+                "rating": 9.3,
+                "doc_id": 10,
+                "added_at": 1751827137.3377974
+              }
+            }
+          ]
+        }
+      },
+      "hotel cleanliness": {
+        "error": "1 validation error for SemanticResult\nscore\n  Input should be less than or equal to 1 [type=less_than_equal, input_value=1.5347949266433716, input_type=float]\n    For further information visit https://errors.pydantic.dev/2.10/v/less_than_equal"
+      },
+      "staff service": {
+        "error": "1 validation error for SemanticResult\nscore\n  Input should be less than or equal to 1 [type=less_than_equal, input_value=1.7016592025756836, input_type=float]\n    For further information visit https://errors.pydantic.dev/2.10/v/less_than_equal"
+      },
+      "room comfort": {
+        "error": "1 validation error for SemanticResult\nscore\n  Input should be less than or equal to 1 [type=less_than_equal, input_value=1.7184221744537354, input_type=float]\n    For further information visit https://errors.pydantic.dev/2.10/v/less_than_equal"
+      }
+    },
+    "turkish_query_test": {
+      "top_k_5_min_score_0.0": {
+        "config": {
+          "top_k": 5,
+          "min_score": 0.0
+        },
+        "vector_store_results": 5,
+        "vector_retriever_results": 5,
+        "vs_top_scores": [
+          0.5851327180862427,
+          0.6328557729721069,
+          0.6575139164924622
+        ],
+        "vr_top_scores": [
+          0.6308619976043701,
+          0.6124239563941956,
+          0.6033132076263428
+        ],
+        "vs_sample_results": [
+          {
+            "score": 0.5851327180862427,
+            "content": "Otelin konumu çok güzel, denize yakın ve merkeze yürüme mesafesinde.",
+            "metadata": {
+              "hotel_id": "hotel_002",
+              "language": "tr",
+              "aspect": "konum",
+              "rating": 8.5,
+              "doc_id": 2,
+              "added_at": 1751827137.103927
+            }
+          },
+          {
+            "score": 0.6328557729721069,
+            "content": "Otelin havuzu temiz ve büyük, çocuklar için ayrı alan var.",
+            "metadata": {
+              "hotel_id": "hotel_001",
+              "language": "tr",
+              "aspect": "havuz",
+              "rating": 8.4,
+              "doc_id": 8,
+              "added_at": 1751827137.103942
+            }
+          }
+        ],
+        "vr_sample_results": [
+          {
+            "score": 0.6308619976043701,
+            "content": "Otelin konumu çok güzel, denize yakın ve merkeze yürüme mesafesinde.",
+            "metadata": {
+              "hotel_id": "hotel_002",
+              "language": "tr",
+              "aspect": "konum",
+              "rating": 8.5,
+              "doc_id": 2,
+              "added_at": 1751827137.2893488
+            }
+          },
+          {
+            "score": 0.6124239563941956,
+            "content": "Otelin havuzu temiz ve büyük, çocuklar için ayrı alan var.",
+            "metadata": {
+              "hotel_id": "hotel_001",
+              "language": "tr",
+              "aspect": "havuz",
+              "rating": 8.4,
+              "doc_id": 8,
+              "added_at": 1751827137.289369
+            }
+          }
+        ]
+      },
+      "top_k_10_min_score_0.0": {
+        "config": {
+          "top_k": 10,
+          "min_score": 0.0
+        },
+        "vector_store_results": 10,
+        "vector_retriever_results": 10,
+        "vs_top_scores": [
+          0.5851327180862427,
+          0.6328557729721069,
+          0.6575139164924622
+        ],
+        "vr_top_scores": [
+          0.6308619976043701,
+          0.6124239563941956,
+          0.6033132076263428
+        ],
+        "vs_sample_results": [
+          {
+            "score": 0.5851327180862427,
+            "content": "Otelin konumu çok güzel, denize yakın ve merkeze yürüme mesafesinde.",
+            "metadata": {
+              "hotel_id": "hotel_002",
+              "language": "tr",
+              "aspect": "konum",
+              "rating": 8.5,
+              "doc_id": 2,
+              "added_at": 1751827137.103927
+            }
+          },
+          {
+            "score": 0.6328557729721069,
+            "content": "Otelin havuzu temiz ve büyük, çocuklar için ayrı alan var.",
+            "metadata": {
+              "hotel_id": "hotel_001",
+              "language": "tr",
+              "aspect": "havuz",
+              "rating": 8.4,
+              "doc_id": 8,
+              "added_at": 1751827137.103942
+            }
+          }
+        ],
+        "vr_sample_results": [
+          {
+            "score": 0.6308619976043701,
+            "content": "Otelin konumu çok güzel, denize yakın ve merkeze yürüme mesafesinde.",
+            "metadata": {
+              "hotel_id": "hotel_002",
+              "language": "tr",
+              "aspect": "konum",
+              "rating": 8.5,
+              "doc_id": 2,
+              "added_at": 1751827137.2893488
+            }
+          },
+          {
+            "score": 0.6124239563941956,
+            "content": "Otelin havuzu temiz ve büyük, çocuklar için ayrı alan var.",
+            "metadata": {
+              "hotel_id": "hotel_001",
+              "language": "tr",
+              "aspect": "havuz",
+              "rating": 8.4,
+              "doc_id": 8,
+              "added_at": 1751827137.289369
+            }
+          }
+        ]
+      },
+      "top_k_5_min_score_0.1": {
+        "config": {
+          "top_k": 5,
+          "min_score": 0.1
+        },
+        "vector_store_results": 5,
+        "vector_retriever_results": 5,
+        "vs_top_scores": [
+          0.5851327180862427,
+          0.6328557729721069,
+          0.6575139164924622
+        ],
+        "vr_top_scores": [
+          0.6308619976043701,
+          0.6124239563941956,
+          0.6033132076263428
+        ],
+        "vs_sample_results": [
+          {
+            "score": 0.5851327180862427,
+            "content": "Otelin konumu çok güzel, denize yakın ve merkeze yürüme mesafesinde.",
+            "metadata": {
+              "hotel_id": "hotel_002",
+              "language": "tr",
+              "aspect": "konum",
+              "rating": 8.5,
+              "doc_id": 2,
+              "added_at": 1751827137.103927
+            }
+          },
+          {
+            "score": 0.6328557729721069,
+            "content": "Otelin havuzu temiz ve büyük, çocuklar için ayrı alan var.",
+            "metadata": {
+              "hotel_id": "hotel_001",
+              "language": "tr",
+              "aspect": "havuz",
+              "rating": 8.4,
+              "doc_id": 8,
+              "added_at": 1751827137.103942
+            }
+          }
+        ],
+        "vr_sample_results": [
+          {
+            "score": 0.6308619976043701,
+            "content": "Otelin konumu çok güzel, denize yakın ve merkeze yürüme mesafesinde.",
+            "metadata": {
+              "hotel_id": "hotel_002",
+              "language": "tr",
+              "aspect": "konum",
+              "rating": 8.5,
+              "doc_id": 2,
+              "added_at": 1751827137.2893488
+            }
+          },
+          {
+            "score": 0.6124239563941956,
+            "content": "Otelin havuzu temiz ve büyük, çocuklar için ayrı alan var.",
+            "metadata": {
+              "hotel_id": "hotel_001",
+              "language": "tr",
+              "aspect": "havuz",
+              "rating": 8.4,
+              "doc_id": 8,
+              "added_at": 1751827137.289369
+            }
+          }
+        ]
+      },
+      "top_k_5_min_score_0.3": {
+        "config": {
+          "top_k": 5,
+          "min_score": 0.3
+        },
+        "vector_store_results": 5,
+        "vector_retriever_results": 5,
+        "vs_top_scores": [
+          0.5851327180862427,
+          0.6328557729721069,
+          0.6575139164924622
+        ],
+        "vr_top_scores": [
+          0.6308619976043701,
+          0.6124239563941956,
+          0.6033132076263428
+        ],
+        "vs_sample_results": [
+          {
+            "score": 0.5851327180862427,
+            "content": "Otelin konumu çok güzel, denize yakın ve merkeze yürüme mesafesinde.",
+            "metadata": {
+              "hotel_id": "hotel_002",
+              "language": "tr",
+              "aspect": "konum",
+              "rating": 8.5,
+              "doc_id": 2,
+              "added_at": 1751827137.103927
+            }
+          },
+          {
+            "score": 0.6328557729721069,
+            "content": "Otelin havuzu temiz ve büyük, çocuklar için ayrı alan var.",
+            "metadata": {
+              "hotel_id": "hotel_001",
+              "language": "tr",
+              "aspect": "havuz",
+              "rating": 8.4,
+              "doc_id": 8,
+              "added_at": 1751827137.103942
+            }
+          }
+        ],
+        "vr_sample_results": [
+          {
+            "score": 0.6308619976043701,
+            "content": "Otelin konumu çok güzel, denize yakın ve merkeze yürüme mesafesinde.",
+            "metadata": {
+              "hotel_id": "hotel_002",
+              "language": "tr",
+              "aspect": "konum",
+              "rating": 8.5,
+              "doc_id": 2,
+              "added_at": 1751827137.2893488
+            }
+          },
+          {
+            "score": 0.6124239563941956,
+            "content": "Otelin havuzu temiz ve büyük, çocuklar için ayrı alan var.",
+            "metadata": {
+              "hotel_id": "hotel_001",
+              "language": "tr",
+              "aspect": "havuz",
+              "rating": 8.4,
+              "doc_id": 8,
+              "added_at": 1751827137.289369
+            }
+          }
+        ]
+      }
+    }
+  },
+  "recommendations": [
+    "✅ Index contains documents and is ready for search",
+    "📊 Query success rate: 50.0% (4/8)"
+  ]
+}

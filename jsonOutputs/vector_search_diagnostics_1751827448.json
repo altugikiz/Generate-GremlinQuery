@@ -1,0 +1,109 @@
+{
+  "timestamp": 1751827448.4964924,
+  "diagnostic_summary": {
+    "embedding_generation": "✅ PASS",
+    "vector_searches": "4/4 PASS",
+    "overall_status": "✅ HEALTHY"
+  },
+  "component_status": {
+    "vector_retriever_initialized": true,
+    "vector_store_initialized": true,
+    "embedding_model": "all-MiniLM-L6-v2",
+    "index_type": "FAISS"
+  },
+  "test_results": [
+    {
+      "query": "otel temizliği hakkında yorum",
+      "description": "Turkish query about hotel cleanliness",
+      "execution_time_ms": 116.99962615966797,
+      "retriever_results": 10,
+      "store_results": 10,
+      "top_retriever_scores": [
+        0.6308619976043701,
+        0.6124239563941956,
+        0.6033132076263428,
+        0.5876143574714661,
+        0.5854587554931641
+      ],
+      "top_store_scores": [
+        0.5851327180862427,
+        0.6328557729721069,
+        0.6575139164924622,
+        0.7017964124679565,
+        0.7080621123313904
+      ],
+      "relevant_results": 0,
+      "aspects_found": []
+    },
+    {
+      "query": "hotel cleanliness reviews",
+      "description": "English query about hotel cleanliness",
+      "execution_time_ms": 58.63046646118164,
+      "retriever_results": 10,
+      "store_results": 10,
+      "top_retriever_scores": [
+        0.37749412655830383,
+        0.3627484142780304,
+        0.35995984077453613,
+        0.3574367165565491,
+        0.35433444380760193
+      ],
+      "top_store_scores": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "relevant_results": 0,
+      "aspects_found": []
+    },
+    {
+      "query": "personel hizmeti nasıl",
+      "description": "Turkish query about staff service",
+      "execution_time_ms": 131.94918632507324,
+      "retriever_results": 10,
+      "store_results": 10,
+      "top_retriever_scores": [
+        0.652512788772583,
+        0.6381977796554565,
+        0.6257500648498535,
+        0.6170345544815063,
+        0.5882953405380249
+      ],
+      "top_store_scores": [
+        0.5325369834899902,
+        0.5669124722480774,
+        0.5980820655822754,
+        0.6206547617912292,
+        0.6998264789581299
+      ],
+      "relevant_results": 0,
+      "aspects_found": []
+    },
+    {
+      "query": "konum ve ulaşım",
+      "description": "Turkish query about location",
+      "execution_time_ms": 138.1692886352539,
+      "retriever_results": 10,
+      "store_results": 10,
+      "top_retriever_scores": [
+        0.6174935698509216,
+        0.601402223110199,
+        0.5930066704750061,
+        0.5726485848426819,
+        0.5685088038444519
+      ],
+      "top_store_scores": [
+        0.6194500923156738,
+        0.6627808809280396,
+        0.6863216161727905,
+        0.7462716102600098,
+        0.7589876651763916
+      ],
+      "relevant_results": 0,
+      "aspects_found": []
+    }
+  ],
+  "recommendations": []
+}

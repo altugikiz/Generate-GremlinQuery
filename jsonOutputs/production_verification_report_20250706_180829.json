@@ -1,0 +1,446 @@
+{
+  "timestamp": "2025-07-06T18:08:29.286431",
+  "base_url": "http://localhost:8000",
+  "total_time_seconds": 25.306844234466553,
+  "statistics": {
+    "total_tests": 21,
+    "passed": 3,
+    "failed": 14,
+    "warnings": 4,
+    "success_rate": 14.285714285714285
+  },
+  "production_ready": false,
+  "test_suites": [
+    {
+      "name": "Health & Status",
+      "total_tests": 2,
+      "passed": 1,
+      "failed": 1,
+      "warnings": 0,
+      "success_rate": 50.0,
+      "results": [
+        {
+          "name": "System Health Check",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 276.0946750640869,
+          "details": "Unhealthy components: ['gremlin']",
+          "response_data": {
+            "status": "unhealthy",
+            "timestamp": "2025-07-06T18:08:04.253289",
+            "components": {
+              "gremlin": "error",
+              "vector_store": "healthy",
+              "rag_pipeline": "healthy"
+            },
+            "version": "1.0.0",
+            "uptime_seconds": 1086.7028243541718,
+            "development_mode": false
+          },
+          "error": "System status: unhealthy"
+        },
+        {
+          "name": "Detailed Health Check",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 22.081613540649414,
+          "details": "Detailed health information available",
+          "response_data": {
+            "timestamp": "2025-07-06T18:08:04.260995",
+            "uptime_seconds": 1086.710544347763,
+            "services": {
+              "gremlin": {
+                "status": "error",
+                "error": "'SyncGremlinClient' object has no attribute 'get_statistics'"
+              },
+              "vector_store": {
+                "status": "ready",
+                "statistics": {
+                  "is_initialized": true,
+                  "document_count": 0,
+                  "index_size": 0,
+                  "embedding_dimension": 384,
+                  "search_count": 0,
+                  "total_search_time_ms": 0.0,
+                  "average_search_time_ms": 0.0,
+                  "index_count": 0,
+                  "model_name": "all-MiniLM-L6-v2"
+                }
+              },
+              "rag_pipeline": {
+                "status": "ready",
+                "statistics": {
+                  "pipeline": {
+                    "search_count": 0,
+                    "total_search_time_ms": 0.0,
+                    "average_search_time_ms": 0.0,
+                    "query_translation_count": 0,
+                    "total_translation_time_ms": 0.0,
+                    "average_translation_time_ms": 0.0,
+                    "model_provider": "gemini",
+                    "llm_model": "gemini-2.0-flash",
+                    "max_graph_results": 10,
+                    "max_semantic_results": 5,
+                    "development_mode": false
+                  },
+                  "gremlin": {
+                    "error": "'SyncGremlinClient' object has no attribute 'get_statistics'"
+                  },
+                  "vector_store": {
+                    "is_initialized": true,
+                    "document_count": 0,
+                    "index_size": 0,
+                    "embedding_dimension": 384,
+                    "search_count": 0,
+                    "total_search_time_ms": 0.0,
+                    "average_search_time_ms": 0.0,
+                    "index_count": 0,
+                    "model_name": "all-MiniLM-L6-v2"
+                  },
+                  "vector_retriever": {
+                    "is_initialized": true,
+                    "document_count": 0,
+                    "index_size": 0,
+                    "embedding_dimension": 384,
+                    "search_count": 0,
+                    "total_search_time_ms": 0.0,
+                    "average_search_time_ms": 0.0,
+                    "index_count": 0,
+                    "model_name": "all-MiniLM-L6-v2"
+                  }
+                }
+              }
+            },
+            "system": {
+              "cpu_percent": 8.6,
+              "memory_percent": 88.5,
+              "process_memory_mb": 567.046875,
+              "process_cpu_percent": 0.0,
+              "disk_usage_percent": 68.8
+            },
+            "performance": {}
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "Gremlin Translation",
+      "total_tests": 5,
+      "passed": 0,
+      "failed": 5,
+      "warnings": 0,
+      "success_rate": 0.0,
+      "results": [
+        {
+          "name": "Turkish Hotel Query",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 3.918886184692383,
+          "details": "",
+          "response_data": {
+            "detail": [
+              {
+                "type": "missing",
+                "loc": [
+                  "body",
+                  "prompt"
+                ],
+                "msg": "Field required",
+                "input": {
+                  "query": "Türkiye otellerinin isimlerini göster",
+                  "max_results": 10
+                }
+              }
+            ]
+          },
+          "error": "HTTP 422: [{'type': 'missing', 'loc': ['body', 'prompt'], 'msg': 'Field required', 'input': {'query': 'Türkiye otellerinin isimlerini göster', 'max_results': 10}}]"
+        },
+        {
+          "name": "English Cleanliness Query",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 0.7207393646240234,
+          "details": "",
+          "response_data": {
+            "error": "Server disconnected"
+          },
+          "error": "HTTP 0: Unknown error"
+        },
+        {
+          "name": "Turkish VIP Guest Query",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 24369.198083877563,
+          "details": "",
+          "response_data": {
+            "detail": [
+              {
+                "type": "missing",
+                "loc": [
+                  "body",
+                  "prompt"
+                ],
+                "msg": "Field required",
+                "input": {
+                  "query": "VIP misafirlerin sorunlarını göster",
+                  "max_results": 10
+                }
+              }
+            ]
+          },
+          "error": "HTTP 422: [{'type': 'missing', 'loc': ['body', 'prompt'], 'msg': 'Field required', 'input': {'query': 'VIP misafirlerin sorunlarını göster', 'max_results': 10}}]"
+        },
+        {
+          "name": "English Rating Query",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 2.4678707122802734,
+          "details": "",
+          "response_data": {
+            "detail": [
+              {
+                "type": "missing",
+                "loc": [
+                  "body",
+                  "prompt"
+                ],
+                "msg": "Field required",
+                "input": {
+                  "query": "Find hotels with rating above 4.5",
+                  "max_results": 10
+                }
+              }
+            ]
+          },
+          "error": "HTTP 422: [{'type': 'missing', 'loc': ['body', 'prompt'], 'msg': 'Field required', 'input': {'query': 'Find hotels with rating above 4.5', 'max_results': 10}}]"
+        },
+        {
+          "name": "Turkish Complex Query",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 2.0372867584228516,
+          "details": "",
+          "response_data": {
+            "detail": [
+              {
+                "type": "missing",
+                "loc": [
+                  "body",
+                  "prompt"
+                ],
+                "msg": "Field required",
+                "input": {
+                  "query": "Son bir ayda yazılmış olumsuz yorumları göster",
+                  "max_results": 10
+                }
+              }
+            ]
+          },
+          "error": "HTTP 422: [{'type': 'missing', 'loc': ['body', 'prompt'], 'msg': 'Field required', 'input': {'query': 'Son bir ayda yazılmış olumsuz yorumları göster', 'max_results': 10}}]"
+        }
+      ]
+    },
+    {
+      "name": "Gremlin Execution",
+      "total_tests": 5,
+      "passed": 0,
+      "failed": 5,
+      "warnings": 0,
+      "success_rate": 0.0,
+      "results": [
+        {
+          "name": "Hotel Count Query",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 2.4590492248535156,
+          "details": "",
+          "response_data": {
+            "detail": "Internal server error"
+          },
+          "error": "HTTP 500: Internal server error"
+        },
+        {
+          "name": "Hotel Names Query",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 17.200708389282227,
+          "details": "",
+          "response_data": {
+            "error": "[WinError 64] Belirtilen ağ adı artık geçersiz"
+          },
+          "error": "HTTP 0: Unknown error"
+        },
+        {
+          "name": "Review Count Query",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 271.1329460144043,
+          "details": "",
+          "response_data": {
+            "detail": "Internal server error"
+          },
+          "error": "HTTP 500: Internal server error"
+        },
+        {
+          "name": "Edge Labels Query",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 5.136966705322266,
+          "details": "",
+          "response_data": {
+            "error": "[WinError 64] Belirtilen ağ adı artık geçersiz"
+          },
+          "error": "HTTP 0: Unknown error"
+        },
+        {
+          "name": "Hotel-Review Relationship",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 3.5996437072753906,
+          "details": "",
+          "response_data": {
+            "detail": "Internal server error"
+          },
+          "error": "HTTP 500: Internal server error"
+        }
+      ]
+    },
+    {
+      "name": "Semantic RAG Endpoints",
+      "total_tests": 3,
+      "passed": 0,
+      "failed": 3,
+      "warnings": 0,
+      "success_rate": 0.0,
+      "results": [
+        {
+          "name": "Semantic Ask Endpoint",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 3.926515579223633,
+          "details": "",
+          "response_data": {
+            "error": "[WinError 64] Belirtilen ağ adı artık geçersiz"
+          },
+          "error": "HTTP 0: Unknown error"
+        },
+        {
+          "name": "Vector Search Endpoint",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 270.3208923339844,
+          "details": "",
+          "response_data": {
+            "detail": "Failed to perform vector search: VectorRetriever.retrieve_similar_docs() got an unexpected keyword argument 'k'"
+          },
+          "error": "HTTP 500: Failed to perform vector search: VectorRetriever.retrieve_similar_docs() got an unexpected keyword argument 'k'"
+        },
+        {
+          "name": "Semantic Filter Endpoint",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 7.864236831665039,
+          "details": "",
+          "response_data": {
+            "detail": "Internal server error"
+          },
+          "error": "HTTP 500: Internal server error"
+        }
+      ]
+    },
+    {
+      "name": "Analytics Endpoints",
+      "total_tests": 3,
+      "passed": 0,
+      "failed": 0,
+      "warnings": 3,
+      "success_rate": 0.0,
+      "results": [
+        {
+          "name": "Hotel Average Ratings",
+          "status": "TestStatus.WARN",
+          "execution_time_ms": 5.180597305297852,
+          "details": "Endpoint not found (may not be implemented)",
+          "response_data": {
+            "detail": "Not Found"
+          },
+          "error": null
+        },
+        {
+          "name": "Group Statistics",
+          "status": "TestStatus.WARN",
+          "execution_time_ms": 2.606630325317383,
+          "details": "Endpoint not found (may not be implemented)",
+          "response_data": {
+            "detail": "Not Found"
+          },
+          "error": null
+        },
+        {
+          "name": "Source Statistics",
+          "status": "TestStatus.WARN",
+          "execution_time_ms": 2.2072792053222656,
+          "details": "Endpoint not found (may not be implemented)",
+          "response_data": {
+            "detail": "Not Found"
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "Error Handling",
+      "total_tests": 3,
+      "passed": 2,
+      "failed": 0,
+      "warnings": 1,
+      "success_rate": 66.66666666666666,
+      "results": [
+        {
+          "name": "Empty Query",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 3.4914016723632812,
+          "details": "Correctly returned HTTP 422 for invalid input",
+          "response_data": {
+            "detail": [
+              {
+                "type": "missing",
+                "loc": [
+                  "body",
+                  "prompt"
+                ],
+                "msg": "Field required",
+                "input": {
+                  "query": ""
+                }
+              }
+            ]
+          },
+          "error": null
+        },
+        {
+          "name": "Invalid Gremlin Query",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 2.9213428497314453,
+          "details": "Correctly returned HTTP 500 for invalid input",
+          "response_data": {
+            "detail": "Internal server error"
+          },
+          "error": null
+        },
+        {
+          "name": "Missing Required Fields",
+          "status": "TestStatus.WARN",
+          "execution_time_ms": 5.740165710449219,
+          "details": "Expected [400, 422], got 0",
+          "response_data": {
+            "error": "[WinError 64] Belirtilen ağ adı artık geçersiz"
+          },
+          "error": null
+        }
+      ]
+    }
+  ],
+  "critical_failures": [
+    "Health & Status: System Health Check - System status: unhealthy",
+    "Gremlin Translation: Turkish Hotel Query - HTTP 422: [{'type': 'missing', 'loc': ['body', 'prompt'], 'msg': 'Field required', 'input': {'query': 'Türkiye otellerinin isimlerini göster', 'max_results': 10}}]",
+    "Gremlin Translation: English Cleanliness Query - HTTP 0: Unknown error",
+    "Gremlin Translation: Turkish VIP Guest Query - HTTP 422: [{'type': 'missing', 'loc': ['body', 'prompt'], 'msg': 'Field required', 'input': {'query': 'VIP misafirlerin sorunlarını göster', 'max_results': 10}}]",
+    "Gremlin Translation: English Rating Query - HTTP 422: [{'type': 'missing', 'loc': ['body', 'prompt'], 'msg': 'Field required', 'input': {'query': 'Find hotels with rating above 4.5', 'max_results': 10}}]",
+    "Gremlin Translation: Turkish Complex Query - HTTP 422: [{'type': 'missing', 'loc': ['body', 'prompt'], 'msg': 'Field required', 'input': {'query': 'Son bir ayda yazılmış olumsuz yorumları göster', 'max_results': 10}}]",
+    "Gremlin Execution: Hotel Count Query - HTTP 500: Internal server error",
+    "Gremlin Execution: Hotel Names Query - HTTP 0: Unknown error",
+    "Gremlin Execution: Review Count Query - HTTP 500: Internal server error",
+    "Gremlin Execution: Edge Labels Query - HTTP 0: Unknown error",
+    "Gremlin Execution: Hotel-Review Relationship - HTTP 500: Internal server error",
+    "Semantic RAG Endpoints: Semantic Ask Endpoint - HTTP 0: Unknown error",
+    "Semantic RAG Endpoints: Vector Search Endpoint - HTTP 500: Failed to perform vector search: VectorRetriever.retrieve_similar_docs() got an unexpected keyword argument 'k'",
+    "Semantic RAG Endpoints: Semantic Filter Endpoint - HTTP 500: Internal server error"
+  ]
+}

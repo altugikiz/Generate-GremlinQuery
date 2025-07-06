@@ -13,7 +13,7 @@ from loguru import logger
 
 from app.config.settings import get_settings
 from app.api.routes import search, health, schema, ask, analytics, semantic, graph_rag_endpoints
-from app.core.schema_gremlin_client import SchemaAwareGremlinClient
+from app.core.sync_gremlin_client import SyncGremlinClient
 from app.core.vector_store import VectorStore
 from app.core.rag_pipeline import EnhancedRAGPipeline
 from app.core.graph_query_llm import GraphQueryLLM
@@ -31,15 +31,30 @@ rag_pipeline = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Application lifespan manager for startup and shutdown events."""
+    """
+    Application lifespan manager for startup and shutdown events.
+    
+    This function ensures robust initialization of critical services:
+    - Fails fast if essential services cannot be initialized
+    - Provides clear error messages and logging
+    - Prevents silent failures that lead to runtime errors
+    - Follows Azure best practices for service initialization
+    """
     global gremlin_client, vector_store, rag_pipeline
     
     settings = get_settings()
-    logger.info("Starting Graph RAG Pipeline application...")
+    logger.info("🚀 Starting Graph RAG Pipeline application...")
+    
+    # Track initialized components for cleanup
+    initialized_components = []
     
     try:
-        # Initialize Schema-aware Gremlin client
-        gremlin_client = SchemaAwareGremlinClient(
+        # === CRITICAL SERVICE INITIALIZATION ===
+        # These services are essential - startup should fail if they're unavailable
+        
+        # 1. Initialize Sync Gremlin client
+        logger.info("🔌 Initializing Sync Gremlin client...")
+        gremlin_client = SyncGremlinClient(
             url=settings.gremlin_url,
             database=settings.gremlin_database,
             graph=settings.gremlin_graph,
@@ -48,18 +63,42 @@ async def lifespan(app: FastAPI):
             traversal_source=settings.gremlin_traversal_source
         )
         
-        # Try to connect, but don't fail in development mode
+        # Test connection - PRODUCTION MODE: FAIL FAST
         try:
             await gremlin_client.connect()
             logger.info("✅ Gremlin client connected successfully")
+            initialized_components.append(("gremlin_client", gremlin_client))
         except Exception as e:
-            if settings.development_mode:
-                logger.warning(f"⚠️ Gremlin connection failed (development mode): {e}")
-                gremlin_client = None  # Will create a mock client later
-            else:
-                raise
+            logger.error(f"❌ PRODUCTION MODE: Gremlin connection REQUIRED but failed: {e}")
+            logger.error("   📋 Check: GREMLIN_URL, GREMLIN_KEY, network connectivity")
+            logger.error("   💡 Suggestion: Verify Cosmos DB Gremlin API is accessible")
+            logger.error("   🚨 PRODUCTION MODE: Application startup will FAIL")
+            # In production mode, ALWAYS fail fast - no development mode fallback allowed
+            raise RuntimeError(f"PRODUCTION MODE: Critical service failure - Gremlin connection failed: {e}")
         
-        # Initialize vector store
+        # 2. Initialize Graph Query LLM (critical for graph operations)
+        logger.info("🤖 Initializing Graph Query LLM...")
+        graph_query_llm = GraphQueryLLM(
+            api_key=settings.gemini_api_key,
+            model_name=settings.gemini_model
+        )
+        
+        try:
+            await graph_query_llm.initialize()
+            logger.info("✅ Graph Query LLM initialized successfully")
+            initialized_components.append(("graph_query_llm", graph_query_llm))
+        except Exception as e:
+            logger.error(f"❌ PRODUCTION MODE: Graph Query LLM initialization REQUIRED but failed: {e}")
+            logger.error("   📋 Check: GEMINI_API_KEY, GEMINI_MODEL, API quota")
+            logger.error("   💡 Suggestion: Verify Gemini API access and model availability")
+            logger.error("   � PRODUCTION MODE: Application startup will FAIL")
+            raise RuntimeError(f"PRODUCTION MODE: Critical service failure - Graph Query LLM initialization failed: {e}")
+        
+        # === REQUIRED SERVICE INITIALIZATION ===
+        # In production mode, ALL services are required
+        
+        # 3. Initialize vector store (REQUIRED in production mode)
+        logger.info("📊 Initializing Vector Store...")
         vector_store = VectorStore(
             store_type=settings.vector_store_type,
             db_uri=settings.vector_db_uri,
@@ -71,30 +110,15 @@ async def lifespan(app: FastAPI):
         try:
             await vector_store.initialize()
             logger.info("✅ Vector store initialized successfully")
+            initialized_components.append(("vector_store", vector_store))
         except Exception as e:
-            if settings.development_mode:
-                logger.warning(f"⚠️ Vector store initialization failed (development mode): {e}")
-                vector_store = None  # Will create a mock store later
-            else:
-                raise
+            logger.error(f"❌ PRODUCTION MODE: Vector store initialization REQUIRED but failed: {e}")
+            logger.error("   � Check: HUGGINGFACE_API_TOKEN, vector store files")
+            logger.error("   � PRODUCTION MODE: Application startup will FAIL")
+            raise RuntimeError(f"PRODUCTION MODE: Vector store initialization failed: {e}")
         
-        # Initialize Graph Query LLM
-        graph_query_llm = GraphQueryLLM(
-            api_key=settings.gemini_api_key,
-            model_name=settings.gemini_model
-        )
-        
-        try:
-            await graph_query_llm.initialize()
-            logger.info("✅ Graph Query LLM initialized successfully")
-        except Exception as e:
-            if settings.development_mode:
-                logger.warning(f"⚠️ Graph Query LLM initialization failed (development mode): {e}")
-                graph_query_llm = None
-            else:
-                raise
-        
-        # Initialize Vector Retriever
+        # 4. Initialize Vector Retriever (REQUIRED in production mode)
+        logger.info("🔍 Initializing Vector Retriever...")
         vector_retriever = VectorRetriever(
             embedding_model=settings.huggingface_embedding_model,
             store_path=settings.vector_db_uri,
@@ -105,14 +129,14 @@ async def lifespan(app: FastAPI):
         try:
             await vector_retriever.initialize()
             logger.info("✅ Vector retriever initialized successfully")
+            initialized_components.append(("vector_retriever", vector_retriever))
         except Exception as e:
-            if settings.development_mode:
-                logger.warning(f"⚠️ Vector retriever initialization failed (development mode): {e}")
-                vector_retriever = None
-            else:
-                raise
+            logger.error(f"❌ PRODUCTION MODE: Vector retriever initialization REQUIRED but failed: {e}")
+            logger.error("   � PRODUCTION MODE: Application startup will FAIL")
+            raise RuntimeError(f"PRODUCTION MODE: Vector retriever initialization failed: {e}")
         
-        # Initialize Enhanced RAG pipeline
+        # 5. Initialize Enhanced RAG pipeline
+        logger.info("🔗 Initializing RAG Pipeline...")
         rag_pipeline = EnhancedRAGPipeline(
             gremlin_client=gremlin_client,
             vector_store=vector_store,
@@ -123,9 +147,10 @@ async def lifespan(app: FastAPI):
             gemini_model=settings.gemini_model,
             max_graph_results=settings.max_graph_results,
             max_semantic_results=settings.max_semantic_results,
-            development_mode=settings.development_mode
+            development_mode=False  # PRODUCTION MODE: Always False, no development fallbacks
         )
-        logger.info("✅ RAG pipeline initialized successfully")
+        logger.info("✅ RAG pipeline initialized successfully - PRODUCTION MODE")
+        initialized_components.append(("rag_pipeline", rag_pipeline))
         
         # Store instances in app state
         app.state.gremlin_client = gremlin_client
@@ -133,26 +158,62 @@ async def lifespan(app: FastAPI):
         app.state.graph_query_llm = graph_query_llm
         app.state.vector_retriever = vector_retriever
         app.state.rag_pipeline = rag_pipeline
-        app.state.development_mode = settings.development_mode
+        app.state.development_mode = False  # PRODUCTION MODE: Always False
         
-        if settings.development_mode:
-            logger.info("🔧 Running in development mode - some features may be limited")
+        # Log initialization summary
+        logger.info("🎯 PRODUCTION MODE: All critical services initialized successfully")
+        
+        all_services = ["gremlin_client", "graph_query_llm", "vector_store", "vector_retriever", "rag_pipeline"]
+        initialized_service_names = [name for name, _ in initialized_components]
+        
+        logger.info(f"✅ All services operational: {', '.join(initialized_service_names)}")
+        logger.info("🚀 PRODUCTION MODE: Real Gremlin execution enabled - No development fallbacks")
+        
+        logger.info("🎉 PRODUCTION MODE: Application startup completed successfully!")
         
         yield
         
     except Exception as e:
-        logger.error(f"❌ Failed to initialize application: {e}")
+        logger.error(f"💥 STARTUP FAILED: {e}")
+        logger.error("🔧 Application will not start - fix the above errors and restart")
+        
+        # Clean up any partially initialized components
+        for name, component in initialized_components:
+            try:
+                if hasattr(component, 'close'):
+                    await component.close()
+                    logger.info(f"🧹 Cleaned up {name}")
+            except Exception as cleanup_error:
+                logger.warning(f"⚠️ Error cleaning up {name}: {cleanup_error}")
+        
+        # Re-raise to prevent application from starting
         raise
+        
     finally:
-        # Cleanup
-        logger.info("Shutting down Graph RAG Pipeline application...")
-        if gremlin_client:
-            await gremlin_client.close()
-        if vector_store:
-            await vector_store.close()
-        if vector_retriever:
-            await vector_retriever.close()
-        logger.info("✅ Application shutdown complete")
+        # === GRACEFUL SHUTDOWN ===
+        logger.info("🔄 Shutting down Graph RAG Pipeline application...")
+        
+        # Clean up in reverse order of initialization (using locals to avoid UnboundLocalError)
+        cleanup_tasks = []
+        for name, var in [
+            ("rag_pipeline", locals().get("rag_pipeline")),
+            ("vector_retriever", locals().get("vector_retriever")),
+            ("vector_store", locals().get("vector_store")),
+            ("graph_query_llm", locals().get("graph_query_llm")),
+            ("gremlin_client", locals().get("gremlin_client"))
+        ]:
+            if var is not None:
+                cleanup_tasks.append((name, var))
+        
+        for name, component in cleanup_tasks:
+            if component and hasattr(component, 'close'):
+                try:
+                    await component.close()
+                    logger.info(f"✅ {name} shutdown complete")
+                except Exception as e:
+                    logger.warning(f"⚠️ Error during {name} shutdown: {e}")
+        
+        logger.info("👋 Application shutdown complete")
 
 
 def create_app() -> FastAPI:

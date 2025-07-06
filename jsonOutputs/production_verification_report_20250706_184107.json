@@ -1,0 +1,603 @@
+{
+  "timestamp": "2025-07-06T18:41:07.759604",
+  "base_url": "http://localhost:8000",
+  "total_time_seconds": 61.012919664382935,
+  "statistics": {
+    "total_tests": 21,
+    "passed": 17,
+    "failed": 2,
+    "warnings": 2,
+    "success_rate": 80.95238095238095
+  },
+  "production_ready": false,
+  "test_suites": [
+    {
+      "name": "Health & Status",
+      "total_tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "warnings": 0,
+      "success_rate": 100.0,
+      "results": [
+        {
+          "name": "System Health Check",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 284.46435928344727,
+          "details": "All components healthy: ['gremlin', 'vector_store', 'rag_pipeline']",
+          "response_data": {
+            "status": "healthy",
+            "timestamp": "2025-07-06T18:40:07.031765",
+            "components": {
+              "gremlin": "healthy",
+              "vector_store": "healthy",
+              "rag_pipeline": "healthy"
+            },
+            "version": "1.0.0",
+            "uptime_seconds": 9.344539642333984,
+            "development_mode": false
+          },
+          "error": null
+        },
+        {
+          "name": "Detailed Health Check",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 10.93912124633789,
+          "details": "Detailed health information available",
+          "response_data": {
+            "timestamp": "2025-07-06T18:40:07.035663",
+            "uptime_seconds": 9.34844970703125,
+            "services": {
+              "gremlin": {
+                "status": "error",
+                "error": "'SyncGremlinClient' object has no attribute 'get_statistics'"
+              },
+              "vector_store": {
+                "status": "ready",
+                "statistics": {
+                  "is_initialized": true,
+                  "document_count": 0,
+                  "index_size": 0,
+                  "embedding_dimension": 384,
+                  "search_count": 0,
+                  "total_search_time_ms": 0.0,
+                  "average_search_time_ms": 0.0,
+                  "index_count": 0,
+                  "model_name": "all-MiniLM-L6-v2"
+                }
+              },
+              "rag_pipeline": {
+                "status": "ready",
+                "statistics": {
+                  "pipeline": {
+                    "search_count": 0,
+                    "total_search_time_ms": 0.0,
+                    "average_search_time_ms": 0.0,
+                    "query_translation_count": 0,
+                    "total_translation_time_ms": 0.0,
+                    "average_translation_time_ms": 0.0,
+                    "model_provider": "gemini",
+                    "llm_model": "gemini-2.0-flash",
+                    "max_graph_results": 10,
+                    "max_semantic_results": 5,
+                    "development_mode": false
+                  },
+                  "gremlin": {
+                    "error": "'SyncGremlinClient' object has no attribute 'get_statistics'"
+                  },
+                  "vector_store": {
+                    "is_initialized": true,
+                    "document_count": 0,
+                    "index_size": 0,
+                    "embedding_dimension": 384,
+                    "search_count": 0,
+                    "total_search_time_ms": 0.0,
+                    "average_search_time_ms": 0.0,
+                    "index_count": 0,
+                    "model_name": "all-MiniLM-L6-v2"
+                  },
+                  "vector_retriever": {
+                    "is_initialized": true,
+                    "document_count": 0,
+                    "index_size": 0,
+                    "embedding_dimension": 384,
+                    "search_count": 0,
+                    "total_search_time_ms": 0.0,
+                    "average_search_time_ms": 0.0,
+                    "index_count": 0,
+                    "model_name": "all-MiniLM-L6-v2"
+                  }
+                }
+              }
+            },
+            "system": {
+              "cpu_percent": 14.7,
+              "memory_percent": 76.9,
+              "process_memory_mb": 502.53125,
+              "process_cpu_percent": 0.0,
+              "disk_usage_percent": 65.7
+            },
+            "performance": {}
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "Gremlin Translation",
+      "total_tests": 5,
+      "passed": 4,
+      "failed": 0,
+      "warnings": 1,
+      "success_rate": 80.0,
+      "results": [
+        {
+          "name": "Turkish Hotel Query",
+          "status": "TestStatus.WARN",
+          "execution_time_ms": 5142.106771469116,
+          "details": "Query missing elements: ['valueMap', 'hotel_name']",
+          "response_data": {
+            "gremlin_query": "g.V().hasLabel('Hotel').has('country', 'Turkey').values('name').limit(10)",
+            "explanation": "Okay, let's break down the Gremlin query:  `g.V().hasLabel('Hotel').has('country', 'Turkey').values('name').limit(10)`\n\n1. **What this query is looking for:**\n\n   The query aims to find the names of hotels located in Turkey.  It wants to retrieve a list of hotel names that meet these criteria.  Furthermore, it limits the number of names returned to 10.\n\n2. **How it traverses the graph:**\n\n   *   `g.V()`:  This starts the query by selecting all vertices (nodes) in the graph.\n   *   `.hasLabel('Hotel')`: This filters the vertices, keeping only those that are labeled as 'Hotel'.  In other words, it narrows down the selection to only hotel nodes.\n   *   `.has('country', 'Turkey')`: This further filters the hotel nodes, selecting only those hotels where the 'country' property is exactly 'Turkey'.\n   *   `.values('name')`: This extracts the value of the 'name' property from each of the remaining hotel nodes.  So, instead of returning the entire hotel node, it only returns the hotel name.\n   *   `.limit(10)`: This limits the number of results returned to a maximum of 10.  If there are more than 10 hotels in Turkey, only the first 10 encountered during the graph traversal will be returned.\n\n3. **What results it will return:**\n\n   The query will return a list (or potentially an empty list if no hotels in Turkey are found) containing up to 10 hotel names. Each item in the list will be the name of a hotel located in Turkey. For example:\n\n   ```\n   [\"Grand Bazaar Hotel\", \"Sultanahmet Palace\", \"Cappadocia Cave Resort\", ...]\n   ```\n\n   The actual names will depend on the data stored in the graph. The order of the returned hotels is not guaranteed unless an `order()` step is included in the query.",
+            "confidence_score": 0.9,
+            "execution_time_ms": 5138.490200042725
+          },
+          "error": null
+        },
+        {
+          "name": "English Cleanliness Query",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 8570.300817489624,
+          "details": "Generated valid Gremlin query: g.V().hasLabel('Hotel').as('hotel').inE('HAS_REVIEW').outV().as('review').inE('HAS_ANALYSIS').outV()...",
+          "response_data": {
+            "gremlin_query": "g.V().hasLabel('Hotel').as('hotel').inE('HAS_REVIEW').outV().as('review').inE('HAS_ANALYSIS').outV().as('analysis').outE('ANALYZES_ASPECT').inV().has('name', 'cleanliness').select('hotel').limit(10)",
+            "explanation": "Okay, let's break down that Gremlin query.\n\n1.  **What this query is looking for:**\n\nThe query aims to find hotels that have reviews where the AI analysis of those reviews specifically mentions \"cleanliness\" as an aspect. It ultimately wants to return a list of these hotels, limited to the first 10 found.\n\n2.  **How it traverses the graph:**\n\nLet's go step-by-step:\n\n*   `g.V().hasLabel('Hotel').as('hotel')`: This starts by selecting all vertices (nodes) labeled as 'Hotel'. The `as('hotel')` part is crucial; it assigns the label \"hotel\" to these hotel vertices. This allows us to refer back to these hotel vertices later in the query.\n\n*   `.inE('HAS_REVIEW').outV().as('review')`:  This part finds the reviews associated with each hotel.\n    *   `.inE('HAS_REVIEW')`:  It traverses *incoming* edges labeled 'HAS_REVIEW'.  Since the edge points *to* the hotel, traversing it *in* means we're finding edges that *lead to* the hotel.  Each of these edges represents a review associated with that hotel.  Essentially, it finds all the \"HAS_REVIEW\" edges that point to the hotels we found in the previous step.\n    *   `.outV()`: This moves from the \"HAS_REVIEW\" *edge* to the *vertex* at the other end of the edge. Because the edge points from the Review to the Hotel, traversing *out* retrieves the Review vertices.\n    *   `.as('review')`: Assigns the label \"review\" to these review vertices so they can be referenced later.\n\n*   `.inE('HAS_ANALYSIS').outV().as('analysis')`: Now we're working with the review vertices. This section retrieves the AI analysis associated with each review.\n    *   `.inE('HAS_ANALYSIS')`: Similar to before, this traverses *incoming* edges labeled 'HAS_ANALYSIS'. Because the edge points *to* the review, traversing it *in* means we're finding edges that *lead to* the review.  Each of these edges represents the analysis associated with that review. Essentially, it finds all the \"HAS_ANALYSIS\" edges that point to the reviews we found in the previous step.\n    *   `.outV()`: This part moves from the \"HAS_ANALYSIS\" *edge* to the *vertex* at the other end of the edge. Because the edge points from the Analysis to the Review, traversing *out* retrieves the Analysis vertices.\n    *  `.as('analysis')`: Assigns the label \"analysis\" to these analysis vertices so they can be referenced later.\n\n*   `.outE('ANALYZES_ASPECT').inV().has('name', 'cleanliness')`: This part is the core of the filtering.\n    *   `.outE('ANALYZES_ASPECT')`: This traverses *outgoing* edges labeled 'ANALYZES_ASPECT' from the analysis vertices.  Because this edge points *from* the Analysis, we are finding the edges that *originate* from the analysis vertices.\n    *   `.inV()`:  This moves from the \"ANALYZES_ASPECT\" edge to the vertex it points to. Since the edge points from the Analysis to the Aspect, traversing *in* retrieves the Aspect vertex.\n    *   `.has('name', 'cleanliness')`: This filters the aspects, keeping only the vertices where the `name` property is equal to \"cleanliness\".  So, we are only interested in the cases where the AI analysis specifically looked at the \"cleanliness\" aspect.\n\n*   `.select('hotel')`: This step is crucial.  It tells Gremlin that we don't want the \"cleanliness\" aspect, the analysis, or the reviews. We specifically want to return the *hotels* that started this whole chain of traversal. The `select('hotel')` refers back to the `as('hotel')` labeling at the beginning of the query.\n\n*   `.limit(10)`: Finally, this limits the number of hotels returned to the first 10 that match the criteria.\n\n3.  **What results it will return:**\n\nThe query will return a list of the first 10 `Hotel` vertices that have reviews whose AI analysis explicitly covers the aspect of \"cleanliness.\" The results will be the vertices themselves, not just the hotel names or any other property. To get the names you would append `.values('name')` to the query.",
+            "confidence_score": 0.9,
+            "execution_time_ms": 8568.596839904785
+          },
+          "error": null
+        },
+        {
+          "name": "Turkish VIP Guest Query",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 4789.228677749634,
+          "details": "Generated valid Gremlin query: g.V().hasLabel('Reviewer').has('traveler_type', 'VIP').out('WROTE').has('text', containing('sorun'))...",
+          "response_data": {
+            "gremlin_query": "g.V().hasLabel('Reviewer').has('traveler_type', 'VIP').out('WROTE').has('text', containing('sorun')).valueMap().limit(10)",
+            "explanation": "Okay, let's break down this Gremlin query.\n\n1. **What this query is looking for:**\n\n   The query aims to find the text of reviews written by reviewers who are classified as \"VIP\" travelers, where the review text contains the word \"sorun\" (which is Turkish for \"problem\").  It will return the properties associated with the first 10 matching reviews.\n\n2. **How it traverses the graph:**\n\n   *   `g.V()`: Starts the graph traversal, considering all vertices (nodes) in the graph.\n   *   `hasLabel('Reviewer')`: Filters the vertices to only include those labeled as \"Reviewer\".  This means we're now only looking at reviewer profiles.\n   *   `has('traveler_type', 'VIP')`: Further filters the reviewers to only include those whose `traveler_type` property is \"VIP\".\n   *   `out('WROTE')`: Traverses the outgoing \"WROTE\" edges from the VIP reviewers.  This moves the traversal from the VIP reviewers to the reviews they have written.\n   *   `has('text', containing('sorun'))`: Filters these reviews to only include the ones where the review text contains the word \"sorun\". The `containing()` predicate is used for substring matching.\n   *   `valueMap()`:  Retrieves all the properties (key-value pairs) of the resulting review vertices.\n   *   `limit(10)`:  Limits the results to the first 10 matching reviews.\n\n3. **What results it will return:**\n\n   The query will return a list of at most 10 maps. Each map represents a single review that satisfies the conditions (written by a VIP reviewer and contains the word \"sorun\"). Each map contains all the properties of that review, such as `id`, `score`, `title`, `text`, `created_at`, `stay_date`, etc. Essentially, it gives you all the data associated with those 10 reviews.",
+            "confidence_score": 0.9,
+            "execution_time_ms": 4787.475109100342
+          },
+          "error": null
+        },
+        {
+          "name": "English Rating Query",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 3207.289457321167,
+          "details": "Generated valid Gremlin query: g.V().hasLabel('Hotel').has('star_rating', gte(4.5)).limit(10)...",
+          "response_data": {
+            "gremlin_query": "g.V().hasLabel('Hotel').has('star_rating', gte(4.5)).limit(10)",
+            "explanation": "Here's a breakdown of the Gremlin query in plain English:\n\n1. **What this query is looking for:**\n\n   The query is designed to find highly-rated hotels. Specifically, it aims to retrieve hotels that have a star rating of 4.5 or higher.  The `limit(10)` at the end restricts the result set to a maximum of 10 hotels.\n\n2. **How it traverses the graph:**\n\n   *   `g.V()`: It starts by considering all vertices (nodes) in the graph.\n   *   `hasLabel('Hotel')`: It filters these vertices, keeping only those that are labeled as 'Hotel' nodes. In other words, it's now looking only at hotels.\n   *   `has('star_rating', gte(4.5))`: It further filters the hotels, selecting only those whose 'star_rating' property is greater than or equal to 4.5.\n   *   `limit(10)`: It limits the results to the first 10 hotels that match the specified criteria.\n\n3. **What results it will return:**\n\n   The query will return a maximum of 10 hotel nodes that have a star rating of 4.5 or higher.  Each result will be a vertex representing a hotel that meets the criteria. The `valueMap()` or `values()` functions are needed to extract specific property values.",
+            "confidence_score": 0.9,
+            "execution_time_ms": 3205.0225734710693
+          },
+          "error": null
+        },
+        {
+          "name": "Turkish Complex Query",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 6000.030755996704,
+          "details": "Generated valid Gremlin query: g.V().hasLabel('Review').has('created_at', P.gte(java.time.LocalDateTime.now().minusMonths(1))).in('...",
+          "response_data": {
+            "gremlin_query": "g.V().hasLabel('Review').has('created_at', P.gte(java.time.LocalDateTime.now().minusMonths(1))).in('HAS_ANALYSIS').has('sentiment_score', P.lt(0)).valueMap().limit(10)",
+            "explanation": "Okay, let's break down this Gremlin query:\n\n**1. What this query is looking for:**\n\nThe query aims to find the 10 most recent reviews (from the past month) that have a negative sentiment score, according to the AI analysis performed on those reviews.  It's essentially trying to identify potentially problematic or unhappy customer experiences within the last month.\n\n**2. How it traverses the graph:**\n\n*   `g.V().hasLabel('Review')`: This starts by selecting all vertices (nodes) in the graph that are labeled as 'Review'. It's essentially finding all the hotel reviews in the database.\n*   `.has('created_at', P.gte(java.time.LocalDateTime.now().minusMonths(1)))`: This filters the reviews further, keeping only those where the 'created_at' timestamp is greater than or equal to (P.gte) the date one month ago from the current time (java.time.LocalDateTime.now().minusMonths(1)). So we only consider reviews created within the past month.\n*   `.in('HAS_ANALYSIS')`: This traverses the graph *inward* along edges labeled 'HAS_ANALYSIS'.  Since the direction is `in`, it means it's finding the 'Analysis' nodes that are *connected to* the reviews selected in the previous step.  In other words, it finds the AI analysis results associated with those recent reviews.\n*   `.has('sentiment_score', P.lt(0))`: This filters the 'Analysis' vertices. It keeps only the analysis results where the 'sentiment_score' is less than 0 (P.lt(0)). This means it selects only the analyses that indicate negative sentiment.\n*   `.valueMap()`: This retrieves all the properties of the selected 'Analysis' vertices as a map (dictionary-like structure). This includes properties like the 'sentiment_score', 'confidence', 'explanation', etc.\n*   `.limit(10)`: This limits the number of results returned to a maximum of 10. It will return the 10 most recent negatively analyzed reviews.\n\n**3. What results it will return:**\n\nThe query will return a list of up to 10 maps (dictionaries). Each map represents the properties of an 'Analysis' vertex that met the following criteria:\n\n*   It is the analysis of a review.\n*   The review was created within the past month.\n*   The analysis has a negative sentiment score (less than 0).\n\nThe properties in each map could include things like:\n\n*   `id`: The unique ID of the analysis.\n*   `sentiment_score`: The negative sentiment score.\n*   `confidence`: How confident the AI was in its analysis.\n*   `explanation`: A brief explanation of why the AI determined the sentiment.\n*   `model_version`: The version of the AI model used for the analysis.\n*   `analyzed_at`: The timestamp of when the analysis was performed.\n\nIn essence, it provides details about the AI's assessment of the 10 most recent, negative reviews.",
+            "confidence_score": 0.9,
+            "execution_time_ms": 5997.701168060303
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "Gremlin Execution",
+      "total_tests": 5,
+      "passed": 5,
+      "failed": 0,
+      "warnings": 0,
+      "success_rate": 100.0,
+      "results": [
+        {
+          "name": "Hotel Count Query",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 621.8783855438232,
+          "details": "Returned 1 results",
+          "response_data": {
+            "query": "g.V().hasLabel('Hotel').count()",
+            "results": [
+              2
+            ],
+            "results_count": 1,
+            "execution_time_ms": 619.7433471679688,
+            "timestamp": 1751816435.378696
+          },
+          "error": null
+        },
+        {
+          "name": "Hotel Names Query",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 477.69880294799805,
+          "details": "Returned 2 results",
+          "response_data": {
+            "query": "g.V().hasLabel('Hotel').limit(5).valueMap('hotel_name')",
+            "results": [
+              {
+                "hotel_name": [
+                  "AKKA CLAROS"
+                ]
+              },
+              {
+                "hotel_name": [
+                  "AKKA SUITES"
+                ]
+              }
+            ],
+            "results_count": 2,
+            "execution_time_ms": 475.50415992736816,
+            "timestamp": 1751816435.8561628
+          },
+          "error": null
+        },
+        {
+          "name": "Review Count Query",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 449.58019256591797,
+          "details": "Returned 1 results",
+          "response_data": {
+            "query": "g.V().hasLabel('Review').count()",
+            "results": [
+              1809
+            ],
+            "results_count": 1,
+            "execution_time_ms": 447.4179744720459,
+            "timestamp": 1751816436.3065739
+          },
+          "error": null
+        },
+        {
+          "name": "Edge Labels Query",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 2037.041425704956,
+          "details": "Returned 10 results",
+          "response_data": {
+            "query": "g.E().label().dedup().limit(10)",
+            "results": [
+              "HAS_HOTEL",
+              "HAS_LANGUAGE",
+              "HAS_REVIEW",
+              "HAS_ASPECT",
+              "HAS_SOURCE",
+              "HAS_ACCOMMODATION",
+              "WRITTEN_IN",
+              "HAS_ANALYSIS",
+              "BELONGS_TO",
+              "REFERS_TO"
+            ],
+            "results_count": 10,
+            "execution_time_ms": 2034.839391708374,
+            "timestamp": 1751816438.344661
+          },
+          "error": null
+        },
+        {
+          "name": "Hotel-Review Relationship",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 794.2228317260742,
+          "details": "Returned 3 results",
+          "response_data": {
+            "query": "g.V().hasLabel('Hotel').limit(1).out().hasLabel('Review').limit(3).valueMap()",
+            "results": [
+              {
+                "link": [
+                  "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sChdDSUhNMG9nS0VMRFhoTGJFcDkzWHdRRRAB!2m1!1s0x0:0xdf82a5495970c56e!3m1!1s2@1:CIHM0ogKELDXhLbEp93XwQE%7CCgwIhsq6wgYQwKaonAE%7C?hl=tr"
+                ],
+                "response_text": [
+                  "Уважаемый Max,\n\nБлагодарим вас за выбор AKKA Hotels для вашего отдыха и за то, что поделились своими впечатлениями. Мы рады, что вы оценили комфорт, любезность нашего персонала и разнообразие блюд. В AKKA Hotels мы стремимся создать атмосферу, где наши гости могут отдохнуть от повседневной суеты, найти спокойствие и зарядиться энергией.\n\nМы с нетерпением ждем вашего следующего визита и уверены, что сможем снова оправдать ваши ожидания.\n\nС уважением,\nCRM AKKA Hotels\ncrm@akkahotels.com"
+                ],
+                "response_date": [
+                  "2025-06-16T14:00:15.000Z"
+                ],
+                "response_flagged": [
+                  true
+                ],
+                "review_text": [
+                  "Побывав впервые в Турции, нам посоветовали именно этот отель для идеального отдыха с комфортом,любезным персоналом и оболденным разнообразием блюд.\nЯ пока что еще тут,но уверен что вернусь сюда снова и снова. Так держать ребята, держите свой уровень.!!!!"
+                ],
+                "hotel_id": [
+                  "030553b1-8b67-42e0-9454-cbc16651ab79"
+                ],
+                "reviewer": [
+                  "Max"
+                ],
+                "score": [
+                  1
+                ],
+                "is_deleted": [
+                  false
+                ],
+                "is_flagged": [
+                  false
+                ]
+              },
+              {
+                "link": [
+                  "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sChdDSUhNMG9nS0VQS3IwYU9BMTludDVBRRAB!2m1!1s0x0:0xdf82a5495970c56e!3m1!1s2@1:CIHM0ogKEPKr0aOA19nt5AE%7CCgsIutK2wgYQ8OShbA%7C?hl=tr"
+                ],
+                "response_text": [
+                  "Уважаемый Андрей,\n\nБлагодарим вас за то, что выбрали AKKA Hotels для вашего отдыха и за то, что поделились своими впечатлениями. Мы рады, что вы оценили чистоту и состояние нашего номера, а также насладились прекрасными видами и уютом нашего отеля. Мы стремимся создать атмосферу, где наши гости могут отдохнуть от повседневной суеты, найти спокойствие и зарядиться энергией.\n\nВаши добрые слова о нашем персонале и кухне очень ценны для нас. Мы гордимся тем, что можем предложить разнообразные удобства, такие как бассейн, бар и пляж, чтобы сделать ваше пребывание незабываемым.\n\nБудем рады приветствовать вас снова в нашем отеле для вашего следующего отпуска.\n\nС уважением,\nCRM AKKA Hotels\ncrm@akkahotels.com"
+                ],
+                "response_date": [
+                  "2025-06-13T12:43:44.000Z"
+                ],
+                "response_flagged": [
+                  true
+                ],
+                "review_text": [
+                  "Очень классный отель. Взяли двух этажный, номер ЧИСТЕЙШИЙ, без плесени в чутка потрепанным временем но хорошем состоянии. Виды из переднего окна прекрасны, балкон хоть и маленький, но зато уютный. Лестница немного крутая, поднимался только держась за перила. Лифт в хорошем состоянии, работает прекрасно, еда ОЧЕНЬ вкусная, повар иногда готовит на большом огне, в пешей доступности есть море, горы и торговые ряды. До моря идти 3 минуты пешим ходом, что очень хорошо, также в отеле все говорят в основном на русском. Персонал очень добрый и отзывчивый. На территории отеля бар, бассейн и две горки, сам не катался позже об этом напишу. В целом, отель шикарен для отдыха в одиночку или семьей. У отеля есть свой пляж с баром, можно взять водички и с 10:00 есть арбузы. В отеле много котиков которые ходят прям по территории, возле бассейна и в др местах. Разумеется есть и минусы, оправданные ценой, такие как: грязные полотенца, перегоревшие лампочки и д.р. Быть честным, хоть и не роскошь но это был один из ЛУЧШИХ отпусков в моей жизни."
+                ],
+                "hotel_id": [
+                  "030553b1-8b67-42e0-9454-cbc16651ab79"
+                ],
+                "reviewer": [
+                  "Андрей"
+                ],
+                "score": [
+                  0.8
+                ],
+                "is_deleted": [
+                  false
+                ],
+                "is_flagged": [
+                  false
+                ]
+              },
+              {
+                "link": [
+                  "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sChdDSUhNMG9nS0VLYUR1Y3FlNWF6bnpnRRAB!2m1!1s0x0:0xdf82a5495970c56e!3m1!1s2@1:CIHM0ogKEKaDucqe5aznzgE%7CCgwIj9ScwgYQuM3W_gI%7C?hl=tr"
+                ],
+                "response_text": [
+                  "Уважаемый Егор,\n\nБлагодарим вас за выбор AKKA Hotels для вашего семейного отдыха и за то, что поделились своими впечатлениями. Мы рады, что вы и ваша мама смогли насладиться отдыхом и оценили наш отель, питание, обслуживание и анимацию. В AKKA Hotels мы стремимся создать атмосферу, где каждая семья может отдохнуть, насладиться спокойствием и зарядиться энергией.\n\nМы будем рады приветствовать вас и вашу семью снова для вашего следующего отпуска, чтобы вы могли вновь насладиться незабываемыми моментами вместе.\n\nС уважением,\nCRM AKKA Hotels\ncrm@akkahotels.com"
+                ],
+                "response_date": [
+                  "2025-06-13T12:48:35.000Z"
+                ],
+                "response_flagged": [
+                  true
+                ],
+                "review_text": [
+                  "Отель классный,еда,обслуживание,аниматоры отличные ,с мамой хорошо отдохнули"
+                ],
+                "hotel_id": [
+                  "030553b1-8b67-42e0-9454-cbc16651ab79"
+                ],
+                "reviewer": [
+                  "Егор"
+                ],
+                "score": [
+                  1
+                ],
+                "is_deleted": [
+                  false
+                ],
+                "is_flagged": [
+                  false
+                ]
+              }
+            ],
+            "results_count": 3,
+            "execution_time_ms": 791.0256385803223,
+            "timestamp": 1751816439.1382349
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "Semantic RAG Endpoints",
+      "total_tests": 3,
+      "passed": 2,
+      "failed": 0,
+      "warnings": 1,
+      "success_rate": 66.66666666666666,
+      "results": [
+        {
+          "name": "Semantic Ask Endpoint",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 1710.8807563781738,
+          "details": "Generated answer (765 chars) with Gremlin query",
+          "response_data": {
+            "answer": "I couldn't find sufficient information to answer your question: \"What are the most common complaints about hotel cleanliness?\"\n\nSystem Status:\n- Generated Gremlin query: g.V().hasLabel('Aspect').has('name', 'cleanliness').inE('ANALYZES_ASPECT').outV().hasLabel('Analysis').order().by('sentiment_score', incr).limit(10).inE('HAS_ANALYSIS').outV().hasLabel('Review').values('text')\n- Graph search results: 0 nodes found\n- Semantic search results: 0 documents found\n\nIssues detected:\n⚠️ No graph results found\n⚠️ No semantic results found\n\nPlease verify that:\n1. The Cosmos DB Gremlin API is accessible and contains data\n2. The vector store is properly initialized with indexed documents\n3. Your query is clear and relates to available data\n\nProcessing time: 1699.38ms",
+            "query": "What are the most common complaints about hotel cleanliness?",
+            "gremlin_query": null,
+            "semantic_chunks": null,
+            "context": null,
+            "execution_time_ms": 1701.1210918426514,
+            "component_times": {
+              "total_execution": 1701.1210918426514,
+              "query_translation": 0.0,
+              "graph_search": 0.0,
+              "semantic_search": 0.0,
+              "response_generation": 1701.1210918426514
+            },
+            "development_mode": false
+          },
+          "error": null
+        },
+        {
+          "name": "Vector Search Endpoint",
+          "status": "TestStatus.WARN",
+          "execution_time_ms": 7.431745529174805,
+          "details": "No vector search results (may need indexed data)",
+          "response_data": {
+            "results": [],
+            "query_embedding": null,
+            "execution_time_ms": 0.7054805755615234,
+            "total_documents": 0
+          },
+          "error": null
+        },
+        {
+          "name": "Semantic Filter Endpoint",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 1854.6526432037354,
+          "details": "Executed filter query, got 2 results",
+          "response_data": {
+            "gremlin_query": "g.V().hasLabel('Hotel').limit(10).valueMap(true)",
+            "results": [
+              {
+                "id": "030553b1-8b67-42e0-9454-cbc16651ab79",
+                "label": "Hotel",
+                "hotel_id": [
+                  "030553b1-8b67-42e0-9454-cbc16651ab79"
+                ],
+                "hotel_name": [
+                  "AKKA CLAROS"
+                ]
+              },
+              {
+                "id": "2e9e4dc6-a3b5-4c70-8372-becdd6107f5e",
+                "label": "Hotel",
+                "hotel_id": [
+                  "2e9e4dc6-a3b5-4c70-8372-becdd6107f5e"
+                ],
+                "hotel_name": [
+                  "AKKA SUITES"
+                ]
+              }
+            ],
+            "summary": "The query found two hotels, \"AKKA CLAROS\" and \"AKKA SUITES,\" that have an average rating of 4.0 or higher based on hotel reviews. This indicates that both hotels have generally positive guest satisfaction levels, meeting a minimum threshold of a good rating. Without more data on the volume of reviews contributing to these ratings, it's difficult to draw stronger conclusions about the overall performance and guest satisfaction beyond this minimum bar. There is a pattern of both hotels beginning with the name AKKA.",
+            "execution_time_ms": 1848.0925559997559
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "Analytics Endpoints",
+      "total_tests": 3,
+      "passed": 1,
+      "failed": 2,
+      "warnings": 0,
+      "success_rate": 33.33333333333333,
+      "results": [
+        {
+          "name": "Hotel Average Ratings",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 8302.248239517212,
+          "details": "",
+          "response_data": {
+            "detail": "Failed to retrieve hotel averages: RetryError[<Future at 0x198d546a210 state=finished raised GremlinServerError>]"
+          },
+          "error": "HTTP 500: Failed to retrieve hotel averages: RetryError[<Future at 0x198d546a210 state=finished raised GremlinServerError>]"
+        },
+        {
+          "name": "Group Statistics",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 111.00244522094727,
+          "details": "Returned 1 analytics records",
+          "response_data": [
+            {
+              "group_id": "group|akka",
+              "group_name": "AKKA",
+              "hotel_count": 0,
+              "total_reviews": 0,
+              "average_rating": 0.0,
+              "review_sources": [],
+              "top_aspects": []
+            }
+          ],
+          "error": null
+        },
+        {
+          "name": "Source Statistics",
+          "status": "TestStatus.FAIL",
+          "execution_time_ms": 8303.425073623657,
+          "details": "",
+          "response_data": {
+            "detail": {
+              "error": "Failed to retrieve hotel statistics",
+              "message": "RetryError[<Future at 0x198d544a0d0 state=finished raised GremlinServerError>]",
+              "timestamp": "2025-07-06T18:40:59.519064",
+              "endpoint": "/average/hotels"
+            }
+          },
+          "error": "HTTP 500: {'error': 'Failed to retrieve hotel statistics', 'message': 'RetryError[<Future at 0x198d544a0d0 state=finished raised GremlinServerError>]', 'timestamp': '2025-07-06T18:40:59.519064', 'endpoint': '/average/hotels'}"
+        }
+      ]
+    },
+    {
+      "name": "Error Handling",
+      "total_tests": 3,
+      "passed": 3,
+      "failed": 0,
+      "warnings": 0,
+      "success_rate": 100.0,
+      "results": [
+        {
+          "name": "Empty Query",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 1.405954360961914,
+          "details": "Correctly returned HTTP 422 for invalid input",
+          "response_data": {
+            "detail": [
+              {
+                "type": "missing",
+                "loc": [
+                  "body",
+                  "prompt"
+                ],
+                "msg": "Field required",
+                "input": {
+                  "query": ""
+                }
+              }
+            ]
+          },
+          "error": null
+        },
+        {
+          "name": "Invalid Gremlin Query",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 8229.519844055176,
+          "details": "Correctly returned HTTP 500 for invalid input",
+          "response_data": {
+            "detail": "Query execution failed: RetryError[<Future at 0x198d5868470 state=finished raised GremlinServerError>]"
+          },
+          "error": null
+        },
+        {
+          "name": "Missing Required Fields",
+          "status": "TestStatus.PASS",
+          "execution_time_ms": 2.6788711547851562,
+          "details": "Correctly returned HTTP 422 for invalid input",
+          "response_data": {
+            "detail": [
+              {
+                "type": "missing",
+                "loc": [
+                  "body",
+                  "query"
+                ],
+                "msg": "Field required",
+                "input": {}
+              }
+            ]
+          },
+          "error": null
+        }
+      ]
+    }
+  ],
+  "critical_failures": [
+    "Analytics Endpoints: Hotel Average Ratings - HTTP 500: Failed to retrieve hotel averages: RetryError[<Future at 0x198d546a210 state=finished raised GremlinServerError>]",
+    "Analytics Endpoints: Source Statistics - HTTP 500: {'error': 'Failed to retrieve hotel statistics', 'message': 'RetryError[<Future at 0x198d544a0d0 state=finished raised GremlinServerError>]', 'timestamp': '2025-07-06T18:40:59.519064', 'endpoint': '/average/hotels'}"
+  ]
+}

@@ -11,6 +11,7 @@ from typing import Dict, Any
 
 from app.models.dto import HealthResponse
 from app.core.gremlin_client import GremlinClient
+from app.core.sync_gremlin_client import SyncGremlinClient
 from app.core.vector_store import VectorStore
 from app.core.rag_pipeline import RAGPipeline
 
@@ -20,7 +21,7 @@ router = APIRouter()
 _start_time = time.time()
 
 
-def get_gremlin_client(request: Request) -> GremlinClient:
+def get_gremlin_client(request: Request) -> SyncGremlinClient:
     """Dependency to get Gremlin client from app state."""
     return getattr(request.app.state, 'gremlin_client', None)
 
@@ -43,7 +44,7 @@ def get_development_mode(request: Request) -> bool:
 @router.get("/health", response_model=HealthResponse)
 async def health_check(
     request: Request,
-    gremlin_client: GremlinClient = Depends(get_gremlin_client),
+    gremlin_client: SyncGremlinClient = Depends(get_gremlin_client),
     vector_store: VectorStore = Depends(get_vector_store),
     rag_pipeline: RAGPipeline = Depends(get_rag_pipeline),
     development_mode: bool = Depends(get_development_mode)
